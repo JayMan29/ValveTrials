@@ -1,794 +1,13 @@
-#!/usr/bin/env python3
-"""
-valve_trials.py — Build ValveTrials.com (multi-page static site).
-
-Pages written:
-  index.html      Home — the three valves as clickable tiles.
-  aortic.html     Full aortic trial list (search, filters, chronological,
-                  collapsible categories, expandable rows, paper links).
-  mitral.html     Coming-soon page with planned section scaffolding.
-  tricuspid.html  Coming-soon page with planned section scaffolding.
-
-Add a valve's trials later by giving Trial entries valve="Mitral" /
-"Tricuspid" in trials_data.py — the matching page fills in automatically.
-
-Usage:
-    python valve_trials.py            # writes the 4 pages to ./ (or OUTDIR)
-    python valve_trials.py <outdir>   # writes them into <outdir>
-"""
-
-from __future__ import annotations
-import html
-import math
-import os
-import re
-import sys
-from urllib.parse import quote
-from typing import List, Tuple
-
-from model import Trial, CATEGORIES
-from data import TRIALS
-
-EXCLUDE_SIGNALS = {"negative"}
-
-# --- Valves (home tiles + pages) --------------------------------------------
-# key, label, hue, leaflet count (anatomy!), descriptor
-VALVES = [
-    ("aortic", "Aortic", "#146C7A", 3,
-     "Stenosis & regurgitation — TAVR/TAVI, valve-in-valve, bicuspid, timing, and next-generation devices."),
-    ("mitral", "Mitral", "#B23A5B", 2,
-     "Secondary & primary MR — transcatheter edge-to-edge repair and transcatheter mitral replacement."),
-    ("tricuspid", "Tricuspid", "#6D5AB6", 3,
-     "Functional TR — edge-to-edge repair, orthotopic and heterotopic replacement, and repair devices."),
-]
-VALVE_LABEL = {k: lbl for k, lbl, _, _, _ in VALVES}
-VALVE_HUE = {k: h for k, _, h, _, _ in VALVES}
-
-# Placeholder section scaffolding so the space is visibly reserved.
-PLANNED_SECTIONS = {
-    "mitral": ["Secondary MR — TEER", "Primary / degenerative MR",
-               "Transcatheter mitral replacement (TMVR)",
-               "Mitral valve-in-valve / valve-in-ring", "Frontier / next-gen devices"],
-    "tricuspid": ["Functional TR — TEER", "Orthotopic transcatheter replacement",
-                  "Heterotopic / caval valve implantation",
-                  "Annuloplasty & repair devices", "Frontier / next-gen devices"],
-}
-
-CATEGORY_HUE = {
-    "Inoperable / High-Risk AS":  "#B03A2E",
-    "Intermediate-Risk AS":       "#B9770E",
-    "Low-Risk AS":                "#1F7A5A",
-    "Platform Comparison":        "#4A5D75",
-    "Asymptomatic / Timing":      "#7A57C4",
-    "Moderate AS":                "#0E7C86",
-    "Valve-in-Valve / Redo":      "#A6572B",
-    "Bicuspid":                   "#8E44AD",
-    "Aortic Regurgitation":       "#B0344B",
-    "Frontier / Next-Gen Device": "#2C6E8F",
-    "Mitral TEER — Primary / Degenerative MR":   "#C0392B",
-    "Mitral TEER — Secondary / Functional MR":   "#B23A5B",
-    "Secondary MR — Direct Annuloplasty":        "#A6572B",
-    "Secondary MR — Indirect Annuloplasty":      "#C77A2B",
-    "Mitral Chordal Repair":                     "#1F7A5A",
-    "Transcatheter Mitral Replacement (TMVR)":   "#2C6E8F",
-    "Mitral Valve-in-Valve / Ring / MAC":        "#6D5AB6",
-    "Tricuspid TEER":                            "#6D5AB6",
-    "Tricuspid Transcatheter Replacement (TTVR)":"#4E63B6",
-    "Tricuspid Annuloplasty":                    "#8E5AB6",
-    "Tricuspid Heterotopic / Caval":             "#B65AA0",
-    "Tricuspid Frontier / Next-Gen Device":      "#5A78B6",
-}
-
-# Which categories belong to which valve (drives the Editor's category picker).
-VALVE_CATEGORIES = {
-    "Aortic": [c for c in CATEGORIES if c in {
-        "Inoperable / High-Risk AS", "Intermediate-Risk AS", "Low-Risk AS",
-        "Platform Comparison", "Asymptomatic / Timing", "Moderate AS",
-        "Valve-in-Valve / Redo", "Bicuspid", "Aortic Regurgitation",
-        "Frontier / Next-Gen Device"}],
-    "Mitral": [c for c in CATEGORIES if c.startswith("Mitral") or c.startswith("Secondary MR")],
-    "Tricuspid": [c for c in CATEGORIES if c.startswith("Tricuspid")],
-}
-STATUS_META = {
-    "published":  ("🟢", "Published"),
-    "ongoing":    ("🔵", "Ongoing"),
-    "terminated": ("⛔", "Terminated"),
-}
-
-
-def e(text) -> str:
-    return html.escape(str(text), quote=True)
-
-
-def link_nct(nct: str) -> str:
-    if not nct:
-        return ""
-    if nct.upper().startswith("ISRCTN"):
-        return f"https://www.isrctn.com/{e(nct)}"
-    return f"https://clinicaltrials.gov/study/{e(nct)}"
-
-
-def trials_for(valve_key: str) -> List[Trial]:
-    label = VALVE_LABEL[valve_key].lower()
-    return [t for t in TRIALS
-            if t.signal not in EXCLUDE_SIGNALS and (t.valve or "aortic").lower() == label]
-
-
-def sort_year(t: Trial) -> int:
-    for src in (t.year, t.enrollment):
-        if src:
-            m = re.search(r"\d{4}", src)
-            if m:
-                return int(m.group())
-    return 9999
-
-
-# --- paper links -------------------------------------------------------------
-def paper_links(t: Trial) -> List[Tuple[str, str, str]]:
-    out: List[Tuple[str, str, str]] = []
-    if t.doi:
-        out.append(("Read paper (DOI)", f"https://doi.org/{e(t.doi)}", "primary"))
-    if t.pmid:
-        out.append(("PubMed", f"https://pubmed.ncbi.nlm.nih.gov/{e(t.pmid)}/", "primary"))
-    if t.status == "published" and not t.doi and not t.pmid:
-        first_author = (t.authors.split(",")[0].strip() if t.authors else "")
-        term = " ".join(x for x in [t.acronym, first_author, t.year, "aortic"] if x)
-        out.append(("Find on PubMed", f"https://pubmed.ncbi.nlm.nih.gov/?term={quote(term)}", "search"))
-    if t.nct:
-        label = "ISRCTN" if t.nct.upper().startswith("ISRCTN") else "ClinicalTrials.gov"
-        out.append((label, link_nct(t.nct), "registry"))
-    return out
-
-
-# --- small HTML helpers ------------------------------------------------------
-def bullets(items: List[str]) -> str:
-    if not items:
-        return "<p class='empty'>—</p>"
-    return "<ul class='bul'>" + "".join(f"<li>{e(i)}</li>" for i in items) + "</ul>"
-
-
-def result_bullets(items: List[str]) -> str:
-    if not items:
-        return "<p class='empty'>No results yet — trial ongoing.</p>"
-    return "<ul class='results'>" + "".join(f"<li>{e(i)}</li>" for i in items) + "</ul>"
-
-
-def status_badge(t: Trial) -> str:
-    icon, label = STATUS_META.get(t.status, ("•", t.status.title()))
-    return f"<span class='badge status-{t.status}'>{icon} {e(label)}</span>"
-
-
-def row_dates(t: Trial) -> str:
-    bits = []
-    if t.enrollment:
-        bits.append(f"<span class='d-enr'>Enrolled {e(t.enrollment)}</span>")
-    if t.year:
-        bits.append(f"<span class='d-pub'>Published {e(t.year)}</span>")
-    elif t.status == "ongoing":
-        bits.append("<span class='d-pub'>Not yet published</span>")
-    return "<span class='dates'>" + "".join(bits) + "</span>"
-
-
-def overview_table(t: Trial) -> str:
-    rows = [
-        ("Device", t.device), ("Intervention", t.intervention), ("Comparator", t.comparator),
-        ("Population", t.population), ("Risk group", t.risk_group), ("Sample size", t.sample_size),
-        ("Enrollment", t.enrollment), ("Follow-up", t.follow_up), ("Trial type", t.trial_type),
-    ]
-    body = "".join(f"<tr><th>{e(k)}</th><td>{e(v) if v else '—'}</td></tr>" for k, v in rows)
-    return f"<table class='overview'><tbody>{body}</tbody></table>"
-
-
-def paper_bar(t: Trial) -> str:
-    links = paper_links(t)
-    if not links:
-        return "<div class='paperbar none'>Not yet published — trial ongoing.</div>"
-    a = [f"<a class='plink {kind}' href='{url}' target='_blank' rel='noopener'>{e(label)} ↗</a>"
-         for label, url, kind in links]
-    cite = []
-    if t.authors: cite.append(e(t.authors))
-    if t.journal: cite.append(f"<em>{e(t.journal)}</em>")
-    if t.year: cite.append(e(t.year))
-    cite_line = f"<span class='paper-cite'>{' · '.join(cite)}</span>" if cite else ""
-    return f"<div class='paperbar'><div class='plinks'>{''.join(a)}</div>{cite_line}</div>"
-
-
-def detail_body(t: Trial) -> str:
-    caveat = f"<div class='d-caveat'>⚠ {e(t.caveat)}</div>" if t.caveat else ""
-    return f"""
-<div class="body-inner">
-  {paper_bar(t)}
-  {caveat}
-  <p class="d-summary">{e(t.quick_summary)}</p>
-  <div class="d-grid">
-    <div class="d-main">
-      <section><h3>Study overview</h3>{overview_table(t)}</section>
-      <section><h3>Inclusion criteria</h3>{bullets(t.inclusion)}</section>
-      <section><h3>Primary endpoint</h3><p>{e(t.primary_endpoint) or '—'}</p></section>
-      <section><h3>Secondary endpoints</h3>{bullets(t.secondary_endpoints)}</section>
-      <section><h3>Key results</h3>{result_bullets(t.key_results)}</section>
-      <section><h3>Why this trial matters</h3><p>{e(t.why_matters) or '—'}</p></section>
-      <section><h3>Clinical pearls</h3>{bullets(t.pearls)}</section>
-      <section><h3>Limitations</h3>{bullets(t.limitations)}</section>
-    </div>
-    <aside class="d-side">
-      <div class="qf"><h4>Quick facts</h4>
-        <dl>
-          <dt>Valve</dt><dd>{e(t.valve) or '—'}</dd>
-          <dt>Disease</dt><dd>{e(t.disease) or '—'}</dd>
-          <dt>Procedure</dt><dd>{e(t.procedure) or '—'}</dd>
-          <dt>Sample</dt><dd>{e(t.sample_size) or '—'}</dd>
-          <dt>Follow-up</dt><dd>{e(t.follow_up) or '—'}</dd>
-        </dl>
-      </div>
-      <div class="qf"><h4>Guidelines</h4>
-        <p class="lab">ACC / AHA</p><p>{e(t.guideline_acc) or '—'}</p>
-        <p class="lab">ESC / EACTS</p><p>{e(t.guideline_esc) or '—'}</p>
-      </div>
-      <div class="qf"><h4>FDA / regulatory</h4><p>{e(t.fda_impact) or '—'}</p></div>
-      <div class="qf"><h4>Timeline</h4>{bullets(t.timeline)}</div>
-    </aside>
-  </div>
-</div>
-""".strip()
-
-
-def render_row(t: Trial) -> str:
-    hue = CATEGORY_HUE.get(t.category, "#4A5D75")
-    haystack = " ".join([t.acronym, t.full_name, t.device, t.comparator, t.population,
-                         t.nct, t.category, " ".join(t.tags)]).lower()
-    caveat_dot = "<span class='cav-dot' title='See caveat inside'>⚠</span>" if t.caveat else ""
-    return f"""
-<details class="row" style="--hue:{hue}" data-cat="{e(t.category)}"
-         data-status="{e(t.status)}" data-signal="{e(t.signal)}"
-         data-pc="{'1' if t.practice_changing else '0'}" data-search="{e(haystack)}">
-  <summary>
-    <span class="chev" aria-hidden="true"></span>
-    <span class="row-id">
-      <span class="row-acr">{e(t.acronym)} {caveat_dot}</span>
-      <span class="row-name">{e(t.full_name)}</span>
-    </span>
-    <span class="row-take">{e(t.takeaway or t.quick_summary)}</span>
-    <span class="row-meta">{status_badge(t)}{row_dates(t)}</span>
-  </summary>
-  {detail_body(t)}
-</details>
-""".strip()
-
-
-def category_chips(trials: List[Trial]) -> str:
-    present = [c for c in CATEGORIES if any(t.category == c for t in trials)]
-    out = ["<button class='fchip active' data-filter='all'>All</button>"]
-    for c in present:
-        hue = CATEGORY_HUE.get(c, "#4A5D75")
-        n = sum(1 for t in trials if t.category == c)
-        out.append(f"<button class='fchip' data-filter='cat' data-value=\"{e(c)}\" "
-                   f"style='--hue:{hue}'>{e(c)} <span class='fn'>{n}</span></button>")
-    return "".join(out)
-
-
-def render_list(trials: List[Trial]) -> str:
-    present = [c for c in CATEGORIES if any(t.category == c for t in trials)]
-    blocks = []
-    for c in present:
-        hue = CATEGORY_HUE.get(c, "#4A5D75")
-        members = sorted([t for t in trials if t.category == c], key=sort_year)
-        rows = "".join(render_row(t) for t in members)
-        blocks.append(
-            f"<details class='group' data-cat=\"{e(c)}\" style='--hue:{hue}' open>"
-            f"<summary class='grouphead'><span class='gchev' aria-hidden='true'></span>"
-            f"<span class='dot'></span>{e(c)}<span class='gcount'>{len(members)}</span></summary>"
-            f"<div class='rows'>{rows}</div></details>"
-        )
-    return "".join(blocks)
-
-
-def valve_glyph(n_leaflets: int, hue: str) -> str:
-    """En-face closed-valve motif: 3 coaptation lines (tri-leaflet) or a
-    single curved coaptation line (bi-leaflet, mitral)."""
-    cx, cy, r = 50, 50, 38
-    parts = [f"<circle cx='{cx}' cy='{cy}' r='{r}' fill='{hue}' fill-opacity='0.08' "
-             f"stroke='{hue}' stroke-width='2.5'/>"]
-    if n_leaflets == 2:
-        parts.append(f"<path d='M{cx-r+4},{cy-3} Q{cx},{cy+10} {cx+r-4},{cy-3}' fill='none' "
-                     f"stroke='{hue}' stroke-width='2.5' stroke-linecap='round'/>")
-    else:
-        for a in (90, 210, 330):
-            rad = math.radians(a)
-            x = cx + r * math.cos(rad)
-            y = cy + r * math.sin(rad)
-            parts.append(f"<line x1='{cx}' y1='{cy}' x2='{x:.1f}' y2='{y:.1f}' "
-                         f"stroke='{hue}' stroke-width='2.5' stroke-linecap='round'/>")
-    parts.append(f"<circle cx='{cx}' cy='{cy}' r='2.6' fill='{hue}'/>")
-    return f"<svg viewBox='0 0 100 100' class='vglyph' aria-hidden='true'>{''.join(parts)}</svg>"
-
-
-# --- shared shell ------------------------------------------------------------
-def site_header(active: str) -> str:
-    nav = "".join(
-        f"<a href='{k}.html' class='{'active' if k == active else ''}'>{e(lbl)}</a>"
-        for k, lbl, _, _, _ in VALVES
-    )
-    ed = f"<a href='editor.html' class='editlink {'active' if active == 'editor' else ''}'>✎ Editor</a>"
-    return f"""
-<header class="site">
-  <a class="brand" href="index.html">Valve<span>Trials</span>.com</a>
-  <nav class="site-nav">{nav}{ed}</nav>
-</header>""".strip()
-
-
-def page_shell(title: str, active: str, body: str, script: str = "") -> str:
-    js = f"<script>{script}</script>" if script else ""
-    return f"""<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(title)}</title>
+<title>Tricuspid Valve Trials — ValveTrials.com</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>{CSS}</style>
-</head>
-<body>
-{site_header(active)}
-{body}
-<footer class="pagefoot">
-  ValveTrials.com — a cardiology valve-trial reference. Paper links point to the verified DOI or PubMed
-  record; where none was verified, a “Find on PubMed” search link is provided instead of a fabricated one.
-  Negative-result trials are excluded from list views (still present in <span class="mono">trials_data.py</span>).
-  ⚠ flags provisional or context items. A reference aid, not clinical advice.
-</footer>
-{js}
-</body>
-</html>
-"""
-
-
-# --- home --------------------------------------------------------------------
-def build_home() -> str:
-    cards = []
-    for k, lbl, hue, leaflets, desc in VALVES:
-        ts = trials_for(k)
-        n = len(ts)
-        if n:
-            pub = sum(1 for t in ts if t.status == "published")
-            ong = sum(1 for t in ts if t.status == "ongoing")
-            term = sum(1 for t in ts if t.status == "terminated")
-            seg = [f"{pub} published"]
-            if ong:
-                seg.append(f"{ong} ongoing")
-            if term:
-                seg.append(f"{term} terminated")
-            pill = f"<span class='pill'>{' · '.join(seg)}</span>"
-            go = f"<span class='go'>{n} trials →</span>"
-            soon = ""
-        else:
-            pill = "<span class='pill'>In progress</span>"
-            go = "<span class='go'>Coming soon →</span>"
-            soon = " soon"
-        cards.append(
-            f"<a class='vcard{soon}' href='{k}.html' style='--vhue:{hue}'>"
-            f"{valve_glyph(leaflets, hue)}"
-            f"<h2>{e(lbl)}</h2><p>{e(desc)}</p>{pill}{go}</a>"
-        )
-    body = f"""
-<main class="home">
-  <p class="kicker">Cardiology · Valvular Heart Disease · Trial Reference</p>
-  <h1 class="home-h1">Every landmark valve trial, in one place.</h1>
-  <p class="home-lede">Choose a valve to browse its trials — grouped by category, ordered oldest to newest,
-     each linked to the paper. Aortic is live now; mitral and tricuspid are on the way.</p>
-  <div class="valve-cards">{''.join(cards)}</div>
-</main>
-"""
-    return page_shell("ValveTrials.com — Valve Trial Reference", "home", body)
-
-
-# --- aortic (full list) ------------------------------------------------------
-def build_valve_list_page(valve_key: str) -> str:
-    lbl = VALVE_LABEL[valve_key]
-    trials = sorted(trials_for(valve_key), key=sort_year)
-    n = len(trials)
-    n_pub = sum(1 for t in trials if t.status == "published")
-    n_ongoing = sum(1 for t in trials if t.status == "ongoing")
-    n_excluded = sum(1 for t in TRIALS
-                     if (t.valve or "aortic").lower() == lbl.lower() and t.signal in EXCLUDE_SIGNALS)
-
-    body = f"""
-<header class="mast">
-  <p class="kicker"><a class="crumb" href="index.html">ValveTrials.com</a> · {e(lbl)}</p>
-  <h1>{e(lbl)} Valve Trials</h1>
-  <p class="lede">Major transcatheter (and key comparator) {e(lbl.lower())}-valve trials, grouped into
-     collapsible categories and ordered oldest to newest. Click any trial to read the full entry and open the paper.</p>
-  <p class="meta">{n} trials · {n_pub} published · {n_ongoing} ongoing · {n_excluded} negative-result trials excluded · antiplatelet/anticoagulant trials excluded by design</p>
-  <div class="legend">
-    <span>🟢 Published</span><span>🔵 Ongoing</span>
-    <span>Sorted oldest → newest within each category</span><span>⚠ Caveat inside</span>
-  </div>
-</header>
-
-<div class="controls">
-  <div class="controls-inner">
-    <div class="searchbar">
-      <input id="search" type="search" placeholder="Search trial, device, NCT, population…" aria-label="Search trials">
-      <div class="seg" data-group="status">
-        <button class="active" data-value="all">All</button>
-        <button data-value="published">Published</button>
-        <button data-value="ongoing">Ongoing</button>
-      </div>
-      <div class="seg" data-group="pc">
-        <button class="active" data-value="0">All</button>
-        <button data-value="1">⭐ Practice changing</button>
-      </div>
-      <div class="actions">
-        <button id="expandAll">Expand all</button>
-        <button id="collapseAll">Collapse all</button>
-      </div>
-    </div>
-    <div class="fchips">{category_chips(trials)}</div>
-    <div class="countline"><span id="count">{n} / {n} trials shown</span></div>
-  </div>
-</div>
-
-<main class="list">
-  {render_list(trials)}
-  <p id="noresults" class="noresults">No trials match those filters. Clear the search or pick “All”.</p>
-</main>
-"""
-    return page_shell(f"{lbl} Valve Trials — ValveTrials.com", valve_key, body, LIST_JS)
-
-
-# --- coming-soon page --------------------------------------------------------
-def build_coming_soon_page(valve_key: str) -> str:
-    lbl = VALVE_LABEL[valve_key]
-    hue = VALVE_HUE[valve_key]
-    planned = PLANNED_SECTIONS.get(valve_key, [])
-    sections = "".join(
-        f"<div class='soon-sec'><span class='dot'></span>{e(s)}<span class='soon-tag'>coming soon</span></div>"
-        for s in planned
-    )
-    body = f"""
-<header class="mast">
-  <p class="kicker"><a class="crumb" href="index.html">ValveTrials.com</a> · {e(lbl)}</p>
-  <h1>{e(lbl)} Valve Trials</h1>
-  <p class="lede">This section is being built. The structure below is reserved — trials will populate
-     these categories as we add them.</p>
-</header>
-<main class="list" style="--hue:{hue}">
-  <div class="soon-box">
-    <h2>Trials coming soon</h2>
-    <p>We’re curating the {e(lbl.lower())} evidence base with the same standardized entries and verified
-       paper links as the aortic section.</p>
-    <a class="back" href="index.html">← Back to all valves</a>
-  </div>
-  <h3 class="soon-head">Planned sections</h3>
-  <div class="soon-sections">{sections}</div>
-</main>
-"""
-    return page_shell(f"{lbl} Valve Trials — Coming soon — ValveTrials.com", valve_key, body)
-
-
-# ---------------------------------------------------------------------------
-# Editor page — add / edit / delete trials via a form; exports trials.json
-# ---------------------------------------------------------------------------
-# (key, label, kind). kind: text | textarea | list | select | bool | num
-EDITOR_FIELDS = [
-    ("__section__", "Identity", None),
-    ("acronym", "Acronym *", "text"),
-    ("full_name", "Full name", "text"),
-    ("nct", "NCT / ISRCTN id", "text"),
-    ("__section__", "Classification", None),
-    ("valve", "Valve", "select"),
-    ("category", "Category", "select"),
-    ("status", "Status", "select"),
-    ("signal", "Result signal", "select"),
-    ("practice_changing", "Practice changing", "bool"),
-    ("landmark", "Landmark", "bool"),
-    ("caveat", "Caveat (⚠ shown if set)", "text"),
-    ("__section__", "One-liners", None),
-    ("takeaway", "Takeaway (headline)", "textarea"),
-    ("quick_summary", "Quick summary", "textarea"),
-    ("__section__", "Study overview", None),
-    ("device", "Device", "text"),
-    ("intervention", "Intervention", "text"),
-    ("comparator", "Comparator", "text"),
-    ("population", "Population", "text"),
-    ("risk_group", "Risk group", "text"),
-    ("sample_size", "Sample size", "text"),
-    ("enrollment", "Enrollment years", "text"),
-    ("follow_up", "Follow-up", "text"),
-    ("trial_type", "Trial type", "text"),
-    ("disease", "Disease", "text"),
-    ("procedure", "Procedure", "text"),
-    ("__section__", "Clinical detail (one item per line)", None),
-    ("inclusion", "Inclusion criteria", "list"),
-    ("primary_endpoint", "Primary endpoint", "textarea"),
-    ("secondary_endpoints", "Secondary endpoints", "list"),
-    ("key_results", "Key results", "list"),
-    ("why_matters", "Why this trial matters", "textarea"),
-    ("pearls", "Clinical pearls", "list"),
-    ("limitations", "Limitations", "list"),
-    ("tags", "Tags (chips)", "list"),
-    ("__section__", "Guidelines / regulatory / timeline", None),
-    ("guideline_acc", "ACC / AHA", "textarea"),
-    ("guideline_esc", "ESC / EACTS", "textarea"),
-    ("fda_impact", "FDA / regulatory", "textarea"),
-    ("timeline", "Timeline (one item per line)", "list"),
-    ("__section__", "Citation", None),
-    ("authors", "Authors", "text"),
-    ("journal", "Journal", "text"),
-    ("year", "Year", "text"),
-    ("doi", "DOI", "text"),
-    ("pmid", "PubMed ID", "text"),
-]
-
-SELECT_OPTIONS = {
-    "valve": ["Aortic", "Mitral", "Tricuspid"],
-    "status": ["published", "ongoing", "terminated"],
-    "signal": ["positive", "neutral", "negative", "descriptive", "pending"],
-    "category": [],  # populated dynamically from valve
-}
-
-
-def _editor_field_html(key: str, label: str, kind: str) -> str:
-    if key == "__section__":
-        return f"<h3 class='ed-sec'>{e(label)}</h3>"
-    fid = f"f_{key}"
-    if kind == "text":
-        return (f"<label class='ed-field'><span>{e(label)}</span>"
-                f"<input id='{fid}' data-key='{key}' type='text'></label>")
-    if kind == "textarea":
-        return (f"<label class='ed-field wide'><span>{e(label)}</span>"
-                f"<textarea id='{fid}' data-key='{key}' rows='2'></textarea></label>")
-    if kind == "list":
-        return (f"<label class='ed-field wide'><span>{e(label)}</span>"
-                f"<textarea id='{fid}' data-key='{key}' rows='3' "
-                f"placeholder='One item per line'></textarea></label>")
-    if kind == "bool":
-        return (f"<label class='ed-check'><input id='{fid}' data-key='{key}' type='checkbox'>"
-                f"<span>{e(label)}</span></label>")
-    if kind == "select":
-        opts = "".join(f"<option value='{e(o)}'>{e(o)}</option>" for o in SELECT_OPTIONS.get(key, []))
-        return (f"<label class='ed-field'><span>{e(label)}</span>"
-                f"<select id='{fid}' data-key='{key}'>{opts}</select></label>")
-    return ""
-
-
-def build_editor_page() -> str:
-    import json as _json
-    fields_html = "".join(_editor_field_html(k, lbl, kind) for k, lbl, kind in EDITOR_FIELDS)
-
-    # Embed the current data + config so the editor works offline (no fetch).
-    trials_json = _json.dumps([t.to_dict() for t in TRIALS], ensure_ascii=False)
-    cats_by_valve = _json.dumps(VALVE_CATEGORIES, ensure_ascii=False)
-    text_keys = [k for k, _, kind in EDITOR_FIELDS if kind == "text"]
-    ta_keys = [k for k, _, kind in EDITOR_FIELDS if kind == "textarea"]
-    list_keys = [k for k, _, kind in EDITOR_FIELDS if kind == "list"]
-    sel_keys = [k for k, _, kind in EDITOR_FIELDS if kind == "select"]
-    bool_keys = [k for k, _, kind in EDITOR_FIELDS if kind == "bool"]
-
-    body = f"""
-<main class="editor">
-  <div class="ed-intro">
-    <p class="kicker"><a class="crumb" href="index.html">ValveTrials.com</a> · Editor</p>
-    <h1>Trial editor</h1>
-    <p class="lede">Add, edit, or delete trials with the form — no code. Changes stay in your browser
-      until you <b>export</b>. Then commit the downloaded <span class="mono">trials.json</span> to your
-      repository and the site rebuilds automatically (see the README).</p>
-    <div class="ed-actions">
-      <button id="btnNew" class="ed-btn primary">＋ New trial</button>
-      <button id="btnExport" class="ed-btn">⬇ Export trials.json</button>
-      <button id="btnCopyPy" class="ed-btn">⧉ Copy this trial as Python</button>
-      <span id="edCount" class="ed-count"></span>
-      <span id="edDirty" class="ed-dirty" hidden>● unsaved changes (not yet exported)</span>
-    </div>
-  </div>
-
-  <div class="ed-cols">
-    <aside class="ed-side">
-      <input id="edSearch" class="ed-search" type="search" placeholder="Filter trials…">
-      <div id="edList" class="ed-listbox"></div>
-    </aside>
-
-    <section class="ed-form">
-      <div class="ed-formhead">
-        <h2 id="edFormTitle">New trial</h2>
-        <div class="ed-formbtns">
-          <button id="btnApply" class="ed-btn primary">Save to list</button>
-          <button id="btnDelete" class="ed-btn danger" hidden>Delete</button>
-        </div>
-      </div>
-      <div class="ed-grid">{fields_html}</div>
-    </section>
-  </div>
-
-  <dialog id="exportDlg" class="ed-dialog">
-    <form method="dialog"><button class="ed-x" aria-label="Close">✕</button></form>
-    <h3>Export</h3>
-    <p>Your trials were downloaded as <span class="mono">trials.json</span>. Commit that file to the
-       repo root; the GitHub Action rebuilds and republishes the site. You can also copy the JSON below.</p>
-    <textarea id="exportText" rows="12" readonly></textarea>
-    <div class="ed-dialog-actions"><button id="btnCopyJson" class="ed-btn">⧉ Copy JSON</button></div>
-  </dialog>
-</main>
-
-<script>
-const TRIALS = {trials_json};
-const CATS_BY_VALVE = {cats_by_valve};
-const TEXT = {_json.dumps(text_keys)};
-const TA = {_json.dumps(ta_keys)};
-const LISTF = {_json.dumps(list_keys)};
-const SEL = {_json.dumps(sel_keys)};
-const BOOLF = {_json.dumps(bool_keys)};
-
-let editIndex = -1;      // -1 = new trial
-let dirty = false;
-
-const $ = s => document.querySelector(s);
-const listEl = $('#edList');
-const searchEl = $('#edSearch');
-
-function markDirty(v){{ dirty = v; $('#edDirty').hidden = !v; }}
-function setCount(){{ $('#edCount').textContent = TRIALS.length + ' trials in memory'; }}
-
-function catOptions(valve, selected){{
-  const cats = CATS_BY_VALVE[valve] || [];
-  const sel = $('#f_category');
-  sel.innerHTML = '<option value=""></option>' +
-    cats.map(c => `<option value="${{c.replace(/"/g,'&quot;')}}" ${{c===selected?'selected':''}}>${{c}}</option>`).join('');
-}}
-
-function renderList(){{
-  const q = (searchEl.value||'').toLowerCase();
-  const groups = {{}};
-  TRIALS.forEach((t,i)=>{{
-    const hay = [t.acronym,t.full_name,t.nct,t.category,t.valve].join(' ').toLowerCase();
-    if(q && !hay.includes(q)) return;
-    const v = t.valve || 'Aortic';
-    (groups[v] = groups[v] || []).push([t,i]);
-  }});
-  let html='';
-  ['Aortic','Mitral','Tricuspid'].forEach(v=>{{
-    if(!groups[v]) return;
-    html += `<div class="ed-group">${{v}} <span>${{groups[v].length}}</span></div>`;
-    groups[v].forEach(([t,i])=>{{
-      html += `<button class="ed-item ${{i===editIndex?'active':''}}" data-i="${{i}}">
-        <b>${{t.acronym||'(no acronym)'}}</b><span>${{t.category||''}}</span></button>`;
-    }});
-  }});
-  listEl.innerHTML = html || '<p class="ed-empty">No matches.</p>';
-  listEl.querySelectorAll('.ed-item').forEach(b=>b.addEventListener('click',()=>loadTrial(+b.dataset.i)));
-}}
-
-function blank(){{
-  const o = {{practice_changing:false, landmark:false, evidence_stars:0, intervention:'', valve:'Aortic'}};
-  return o;
-}}
-
-function populate(t){{
-  TEXT.forEach(k=> {{ const el=$('#f_'+k); if(el) el.value = t[k]||''; }});
-  TA.forEach(k=> {{ const el=$('#f_'+k); if(el) el.value = t[k]||''; }});
-  LISTF.forEach(k=> {{ const el=$('#f_'+k); if(el) el.value = Array.isArray(t[k])?t[k].join('\\n'):''; }});
-  BOOLF.forEach(k=> {{ const el=$('#f_'+k); if(el) el.checked = !!t[k]; }});
-  // selects
-  $('#f_valve').value = t.valve||'Aortic';
-  $('#f_status').value = t.status||'published';
-  $('#f_signal').value = t.signal||'descriptive';
-  catOptions(t.valve||'Aortic', t.category||'');
-}}
-
-function readForm(){{
-  const o = {{}};
-  TEXT.forEach(k=> o[k] = $('#f_'+k).value.trim());
-  TA.forEach(k=> o[k] = $('#f_'+k).value.trim());
-  LISTF.forEach(k=> o[k] = $('#f_'+k).value.split('\\n').map(s=>s.trim()).filter(Boolean));
-  BOOLF.forEach(k=> o[k] = $('#f_'+k).checked);
-  o.valve = $('#f_valve').value;
-  o.status = $('#f_status').value;
-  o.signal = $('#f_signal').value;
-  o.category = $('#f_category').value;
-  o.evidence_stars = 0;
-  return o;
-}}
-
-function loadTrial(i){{
-  if(dirty && !confirm('Discard unsaved changes to the current trial?')) return;
-  editIndex = i;
-  populate(TRIALS[i]);
-  $('#edFormTitle').textContent = 'Editing: ' + (TRIALS[i].acronym||'(trial)');
-  $('#btnDelete').hidden = false;
-  markDirty(false);
-  renderList();
-}}
-
-function newTrial(){{
-  if(dirty && !confirm('Discard unsaved changes to the current trial?')) return;
-  editIndex = -1;
-  populate(blank());
-  $('#edFormTitle').textContent = 'New trial';
-  $('#btnDelete').hidden = true;
-  markDirty(false);
-  renderList();
-}}
-
-function apply(){{
-  const o = readForm();
-  if(!o.acronym){{ alert('Acronym is required.'); return; }}
-  if(editIndex === -1){{ TRIALS.push(o); editIndex = TRIALS.length-1; }}
-  else {{ TRIALS[editIndex] = o; }}
-  $('#edFormTitle').textContent = 'Editing: ' + o.acronym;
-  $('#btnDelete').hidden = false;
-  markDirty(false); setCount(); renderList();
-}}
-
-function del(){{
-  if(editIndex === -1) return;
-  if(!confirm('Delete "'+(TRIALS[editIndex].acronym||'this trial')+'" from the list?')) return;
-  TRIALS.splice(editIndex,1);
-  newTrial(); setCount();
-}}
-
-function download(name, text){{
-  const blob = new Blob([text], {{type:'application/json'}});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download=name; a.click();
-  URL.revokeObjectURL(url);
-}}
-
-function exportJson(){{
-  const text = JSON.stringify(TRIALS, null, 2);
-  download('trials.json', text);
-  $('#exportText').value = text;
-  $('#exportDlg').showModal();
-  markDirty(false);
-}}
-
-function pyStr(s){{ return '"' + String(s).replace(/\\\\/g,'\\\\\\\\').replace(/"/g,'\\\\"') + '"'; }}
-function toPython(o){{
-  const lines = ['Trial('];
-  const order = ['acronym','full_name','nct','category','valve','procedure','disease','tags',
-    'status','signal','practice_changing','landmark','caveat','quick_summary','takeaway',
-    'device','intervention','comparator','population','risk_group','sample_size','enrollment',
-    'follow_up','trial_type','inclusion','primary_endpoint','secondary_endpoints','key_results',
-    'why_matters','pearls','limitations','guideline_acc','guideline_esc','fda_impact','timeline',
-    'authors','journal','year','doi','pmid'];
-  order.forEach(k=>{{
-    let v = o[k];
-    if(v===undefined || v==='' || (Array.isArray(v)&&v.length===0)) return;
-    if(Array.isArray(v)) v = '[' + v.map(pyStr).join(', ') + ']';
-    else if(typeof v === 'boolean') v = v?'True':'False';
-    else v = pyStr(v);
-    lines.push('    '+k+'='+v+',');
-  }});
-  lines.push(')');
-  return lines.join('\\n');
-}}
-
-$('#btnNew').addEventListener('click', newTrial);
-$('#btnApply').addEventListener('click', apply);
-$('#btnDelete').addEventListener('click', del);
-$('#btnExport').addEventListener('click', exportJson);
-$('#btnCopyPy').addEventListener('click', ()=>{{
-  navigator.clipboard.writeText(toPython(readForm())).then(()=>alert('Python Trial(...) block copied.'));
-}});
-$('#btnCopyJson').addEventListener('click', ()=>{{
-  navigator.clipboard.writeText($('#exportText').value).then(()=>alert('JSON copied.'));
-}});
-searchEl.addEventListener('input', renderList);
-document.querySelectorAll('.ed-grid [data-key]').forEach(el=>{{
-  const ev = (el.type==='checkbox'||el.tagName==='SELECT') ? 'change':'input';
-  el.addEventListener(ev, ()=>markDirty(true));
-}});
-$('#f_valve').addEventListener('change', ()=> catOptions($('#f_valve').value, ''));
-
-setCount(); newTrial();
-</script>
-"""
-    return page_shell("Trial editor — ValveTrials.com", "editor", body)
-
-
-# ---------------------------------------------------------------------------
-CSS = r"""
+<style>
 :root{--ink:#0E262B;--page:#EAEFEE;--card:#FFFFFF;--line:#D2DEDB;--muted:#5B6E6B;
 --accent:#C7402F;--r:12px;}
 *{box-sizing:border-box}
@@ -981,9 +200,705 @@ footer.pagefoot{max-width:1080px;margin:0 auto;padding:22px 24px;border-top:1px 
   .paper-cite{margin-left:0;width:100%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-"""
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="index.html">Valve<span>Trials</span>.com</a>
+  <nav class="site-nav"><a href='aortic.html' class=''>Aortic</a><a href='mitral.html' class=''>Mitral</a><a href='tricuspid.html' class='active'>Tricuspid</a><a href='editor.html' class='editlink '>✎ Editor</a></nav>
+</header>
 
-LIST_JS = r"""
+<header class="mast">
+  <p class="kicker"><a class="crumb" href="index.html">ValveTrials.com</a> · Tricuspid</p>
+  <h1>Tricuspid Valve Trials</h1>
+  <p class="lede">Major transcatheter (and key comparator) tricuspid-valve trials, grouped into
+     collapsible categories and ordered oldest to newest. Click any trial to read the full entry and open the paper.</p>
+  <p class="meta">14 trials · 11 published · 3 ongoing · 0 negative-result trials excluded · antiplatelet/anticoagulant trials excluded by design</p>
+  <div class="legend">
+    <span>🟢 Published</span><span>🔵 Ongoing</span>
+    <span>Sorted oldest → newest within each category</span><span>⚠ Caveat inside</span>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <div class="searchbar">
+      <input id="search" type="search" placeholder="Search trial, device, NCT, population…" aria-label="Search trials">
+      <div class="seg" data-group="status">
+        <button class="active" data-value="all">All</button>
+        <button data-value="published">Published</button>
+        <button data-value="ongoing">Ongoing</button>
+      </div>
+      <div class="seg" data-group="pc">
+        <button class="active" data-value="0">All</button>
+        <button data-value="1">⭐ Practice changing</button>
+      </div>
+      <div class="actions">
+        <button id="expandAll">Expand all</button>
+        <button id="collapseAll">Collapse all</button>
+      </div>
+    </div>
+    <div class="fchips"><button class='fchip active' data-filter='all'>All</button><button class='fchip' data-filter='cat' data-value="Tricuspid TEER" style='--hue:#6D5AB6'>Tricuspid TEER <span class='fn'>6</span></button><button class='fchip' data-filter='cat' data-value="Tricuspid Transcatheter Replacement (TTVR)" style='--hue:#4E63B6'>Tricuspid Transcatheter Replacement (TTVR) <span class='fn'>3</span></button><button class='fchip' data-filter='cat' data-value="Tricuspid Annuloplasty" style='--hue:#8E5AB6'>Tricuspid Annuloplasty <span class='fn'>2</span></button><button class='fchip' data-filter='cat' data-value="Tricuspid Heterotopic / Caval" style='--hue:#B65AA0'>Tricuspid Heterotopic / Caval <span class='fn'>2</span></button><button class='fchip' data-filter='cat' data-value="Tricuspid Frontier / Next-Gen Device" style='--hue:#5A78B6'>Tricuspid Frontier / Next-Gen Device <span class='fn'>1</span></button></div>
+    <div class="countline"><span id="count">14 / 14 trials shown</span></div>
+  </div>
+</div>
+
+<main class="list">
+  <details class='group' data-cat="Tricuspid TEER" style='--hue:#6D5AB6' open><summary class='grouphead'><span class='gchev' aria-hidden='true'></span><span class='dot'></span>Tricuspid TEER<span class='gcount'>6</span></summary><div class='rows'><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="triluminate trial to evaluate treatment with abbott transcatheter clip repair system in patients with moderate or greater tr (single-arm) abbott triclip none (single-arm) moderate or greater symptomatic tr, high surgical risk nct03227757 tricuspid teer triclip teer single-arm feasibility ce-mark">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRILUMINATE </span>
+      <span class="row-name">Trial to Evaluate Treatment With Abbott Transcatheter Clip Repair System in Patients With Moderate or Greater TR (Single-Arm)</span>
+    </span>
+    <span class="row-take">Proved tricuspid TEER was feasible and safe, launching the modern T-TEER era.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2017–2018</span><span class='d-pub'>Published 2019</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=TRILUMINATE%20AND%20%22Nickenig%20G%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT03227757' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Nickenig G, et al. · <em>The Lancet</em> · 2019</span></div>
+  
+  <p class="d-summary">The single-arm feasibility study that established transcatheter edge-to-edge repair of the tricuspid valve as feasible and safe, reducing TR and improving symptoms — the basis for CE mark.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Abbott TriClip</td></tr><tr><th>Intervention</th><td>TEER</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Moderate or greater symptomatic TR, high surgical risk</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>85</td></tr><tr><th>Enrollment</th><td>2017–2018</td></tr><tr><th>Follow-up</th><td>30 days, 1 year, 3 years</td></tr><tr><th>Trial type</th><td>Prospective single-arm, multicenter</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety and reduction in TR severity.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>NYHA class</li><li>6-minute walk</li><li>Quality of life</li><li>Right-heart remodeling</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Significant TR reduction with a strong safety profile</li><li>Durable symptom and functional improvement through 3 years</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>First convincing tricuspid TEER dataset; led to CE mark (2020).</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Used the first-generation clip in a highly selected population.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Single-arm</li><li>Selected anatomy</li><li>First-generation device</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Secondary tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>85</dd>
+          <dt>Follow-up</dt><dd>30 days, 1 year, 3 years</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Feasibility basis for T-TEER.</p>
+        <p class="lab">ESC / EACTS</p><p>Supported CE mark.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>CE mark 2020; precursor to the US pivotal.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2017–2018</li><li>Published: Lancet 2019</li><li>CE mark: 2020</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="clasp tr efs edwards pascal tricuspid repair system early feasibility study edwards pascal / pascal ace none (single-arm) severe symptomatic tr, high surgical risk nct03745313 tricuspid teer pascal teer single-arm feasibility">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">CLASP TR EFS </span>
+      <span class="row-name">Edwards PASCAL Tricuspid Repair System Early Feasibility Study</span>
+    </span>
+    <span class="row-take">PASCAL is the second viable tricuspid TEER platform.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2019–2021</span><span class='d-pub'>Published 2021</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=CLASP%20TR%20EFS%20AND%20%22Kodali%20S%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT03745313' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Kodali S, Hahn RT, et al. · <em>Journal of the American College of Cardiology</em> · 2021</span></div>
+  
+  <p class="d-summary">Early feasibility of the PASCAL system for tricuspid TEER, showing durable TR reduction and functional improvement — the PASCAL counterpart to the TriClip program.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards PASCAL / PASCAL Ace</td></tr><tr><th>Intervention</th><td>TEER</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe symptomatic TR, high surgical risk</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>early feasibility cohort</td></tr><tr><th>Enrollment</th><td>2019–2021</td></tr><tr><th>Follow-up</th><td>30 days, 1 year, 2 years</td></tr><tr><th>Trial type</th><td>Prospective single-arm (EFS)</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety and performance / TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>TR grade</li><li>NYHA / 6-minute walk</li><li>KCCQ</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Durable TR reduction and functional improvement with good safety</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Feasibility basis for the PASCAL tricuspid pivotal (CLASP II TR).</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Independent leaflet grasping and a central spacer suit large tricuspid gaps.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Single-arm</li><li>Small cohort</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>early feasibility cohort</dd>
+          <dt>Follow-up</dt><dd>30 days, 1 year, 2 years</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Feasibility evidence.</p>
+        <p class="lab">ESC / EACTS</p><p>Supported CE-mark program.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Precursor to CLASP II TR pivotal.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2019–2021</li><li>Published: JACC 2021 / JACC Cardiovasc Interv</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="published" data-signal="positive"
+         data-pc="1" data-search="triluminate pivotal triluminate pivotal trial of tricuspid teer vs medical therapy abbott triclip guideline-directed medical therapy severe symptomatic tr, intermediate-or-greater surgical risk nct03904147 tricuspid teer triclip teer vs gdmt rct fda-approved 2024">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRILUMINATE Pivotal </span>
+      <span class="row-name">TRILUMINATE Pivotal Trial of Tricuspid TEER vs Medical Therapy</span>
+    </span>
+    <span class="row-take">Established tricuspid TEER as an FDA-approved therapy; benefit is real but largely symptomatic/QoL.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2019–2021</span><span class='d-pub'>Published 2023</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink primary' href='https://doi.org/10.1056/NEJMoa2300525' target='_blank' rel='noopener'>Read paper (DOI) ↗</a><a class='plink primary' href='https://pubmed.ncbi.nlm.nih.gov/36876753/' target='_blank' rel='noopener'>PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT03904147' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Sorajja P, Whisenant B, Hamid N, et al. · <em>New England Journal of Medicine</em> · 2023</span></div>
+  
+  <p class="d-summary">The first randomized tricuspid TEER trial: TriClip beat medical therapy on a hierarchical composite driven mainly by quality-of-life improvement, with excellent safety and durable TR reduction — the basis for FDA approval.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Abbott TriClip</td></tr><tr><th>Intervention</th><td>TEER</td></tr><tr><th>Comparator</th><td>Guideline-directed medical therapy</td></tr><tr><th>Population</th><td>Severe symptomatic TR, intermediate-or-greater surgical risk</td></tr><tr><th>Risk group</th><td>Intermediate+ surgical risk</td></tr><tr><th>Sample size</th><td>350 (175 / 175) + single-arm</td></tr><tr><th>Enrollment</th><td>2019–2021</td></tr><tr><th>Follow-up</th><td>1 and 2 years</td></tr><tr><th>Trial type</th><td>Randomized, open-label</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Hierarchical composite (win ratio) of death/tricuspid surgery, HF hospitalization, and KCCQ change at 1 year.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>TR grade ≤moderate</li><li>KCCQ</li><li>NYHA / 6-minute walk</li><li>Safety (MAE)</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Win ratio 1.48 (95% CI 1.06–2.13, P=0.02), driven by quality of life</li><li>TR reduced to moderate-or-less in ~90% at 30 days, sustained at 1 year</li><li>&gt;98% free from major adverse events at 30 days</li><li>No significant reduction in death or HF hospitalization</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Practice-changing: basis for FDA approval of TriClip (April 2024).</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Benefit is predominantly symptomatic/QoL — counsel expectations accordingly.</li><li>TR reduction is durable and the procedure is remarkably safe.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Open-label</li><li>Composite driven by KCCQ, not hard outcomes</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Secondary tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>350 (175 / 175) + single-arm</dd>
+          <dt>Follow-up</dt><dd>1 and 2 years</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Basis for FDA-approved T-TEER indication.</p>
+        <p class="lab">ESC / EACTS</p><p>Supports TEER in selected severe TR.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>TriClip FDA-approved April 2, 2024 (first tricuspid TEER); presented ACC.23.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2019–2021</li><li>Published: NEJM 2023 (ACC.23)</li><li>1-year: JACC 2025;85:235-246</li><li>2-year: Circulation 2025</li><li>FDA approval: Apr 2024</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="published" data-signal="positive"
+         data-pc="1" data-search="tri-fr multicentric randomized evaluation of tricuspid teer in severe secondary tr (tri.fr) abbott triclip g4 gdmt alone severe isolated secondary tr, ineligible for surgery nct04646811 tricuspid teer triclip g4 teer vs gdmt rct investigator-led">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRI-FR </span>
+      <span class="row-name">Multicentric Randomized Evaluation of Tricuspid TEER in Severe Secondary TR (Tri.Fr)</span>
+    </span>
+    <span class="row-take">Independent randomized confirmation that tricuspid TEER improves symptoms and functional status.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2021–2023</span><span class='d-pub'>Published 2024</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=TRI-FR%20AND%20%22Donal%20E%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT04646811' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Donal E, et al. · <em>ESC 2024 (peer-reviewed publication)</em> · 2024</span></div>
+  
+  <p class="d-summary">A French/Belgian investigator-led RCT: tricuspid TEER plus medical therapy improved a clinical composite (symptoms, TR, functional status) versus medical therapy alone — the second positive randomized T-TEER trial.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Abbott TriClip G4</td></tr><tr><th>Intervention</th><td>TEER + GDMT</td></tr><tr><th>Comparator</th><td>GDMT alone</td></tr><tr><th>Population</th><td>Severe isolated secondary TR, ineligible for surgery</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>300</td></tr><tr><th>Enrollment</th><td>2021–2023</td></tr><tr><th>Follow-up</th><td>1 year</td></tr><tr><th>Trial type</th><td>Randomized, open-label</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Packer clinical composite score (improved / unchanged / worse) at 1 year.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>Patient global assessment</li><li>TR grade</li><li>6-minute walk</li><li>KCCQ</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Composite improvement 74.6% (TEER) vs 39.5% (GDMT); effect estimate 0.68 (P&lt;0.0001)</li><li>Technical success 97.3%; in-hospital mortality 0.6%</li><li>Most patients required 2 devices</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Sponsor-independent confirmation of TRILUMINATE Pivotal&#x27;s QoL/functional benefit.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Government-funded trial — reduces industry-sponsorship concerns.</li><li>Reinforces that the benefit is symptomatic/functional.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Open-label</li><li>Composite is symptom/QoL-weighted</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Secondary tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>300</dd>
+          <dt>Follow-up</dt><dd>1 year</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Strengthens the T-TEER evidence base.</p>
+        <p class="lab">ESC / EACTS</p><p>Supports TEER in secondary TR.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Not a US registration trial (European).</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2021–2023</li><li>Presented: ESC 2024</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="bright real-world outcomes of tricuspid teer with triclip (bright study) abbott triclip / triclip g4 registry severe symptomatic tr in routine practice  tricuspid teer triclip teer registry real-world">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">bRIGHT <span class='cav-dot' title='See caveat inside'>⚠</span></span>
+      <span class="row-name">Real-World Outcomes of Tricuspid TEER With TriClip (bRIGHT Study)</span>
+    </span>
+    <span class="row-take">Real-world data confirm the safety and TR-reduction seen in the randomized trials.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2020–2023</span><span class='d-pub'>Published 2024</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink primary' href='https://doi.org/10.1016/j.jacc.2024.05.006' target='_blank' rel='noopener'>Read paper (DOI) ↗</a></div><span class='paper-cite'>Lurz P, Rommel KP, Schmitz T, et al. · <em>Journal of the American College of Cardiology</em> · 2024</span></div>
+  <div class='d-caveat'>⚠ Post-market registry (not a dedicated NCT here).</div>
+  <p class="d-summary">A European post-market registry showing that tricuspid TEER reduces TR safely and durably across a broad range of real-world anatomies and centers.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Abbott TriClip / TriClip G4</td></tr><tr><th>Intervention</th><td>TEER</td></tr><tr><th>Comparator</th><td>Registry</td></tr><tr><th>Population</th><td>Severe symptomatic TR in routine practice</td></tr><tr><th>Risk group</th><td>Mixed / high risk</td></tr><tr><th>Sample size</th><td>registry cohort</td></tr><tr><th>Enrollment</th><td>2020–2023</td></tr><tr><th>Follow-up</th><td>30 days, 1 year, 2 years</td></tr><tr><th>Trial type</th><td>Prospective post-market registry</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Real-world safety and TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>NYHA / KCCQ</li><li>Durability</li><li>Procedural success</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Significant, durable TR reduction across broad anatomies</li><li>Safety consistent with the randomized trials</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Provides generalizability for the RCT findings.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Broader/less-selected patients and centers than TRILUMINATE.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Non-randomized registry</li><li>Shorter-term outcomes</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>registry cohort</dd>
+          <dt>Follow-up</dt><dd>30 days, 1 year, 2 years</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Supportive real-world evidence.</p>
+        <p class="lab">ESC / EACTS</p><p>Generalizability data.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Real-world support for T-TEER.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Published: JACC 2024;84:607-616 (1-year)</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#6D5AB6" data-cat="Tricuspid TEER"
+         data-status="ongoing" data-signal="pending"
+         data-pc="0" data-search="clasp ii tr edwards pascal tricuspid repair system pivotal trial edwards pascal gdmt alone severe symptomatic tr  tricuspid teer pascal teer pivotal ongoing">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">CLASP II TR <span class='cav-dot' title='See caveat inside'>⚠</span></span>
+      <span class="row-name">Edwards PASCAL Tricuspid Repair System Pivotal Trial</span>
+    </span>
+    <span class="row-take">The key pivotal that could bring PASCAL to FDA approval for tricuspid TEER.</span>
+    <span class="row-meta"><span class='badge status-ongoing'>🔵 Ongoing</span><span class='dates'><span class='d-enr'>Enrolled ongoing</span><span class='d-pub'>Not yet published</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar none'>Not yet published — trial ongoing.</div>
+  <div class='d-caveat'>⚠ NCT not confirmed here.</div>
+  <p class="d-summary">The pivotal randomized trial of PASCAL tricuspid TEER plus medical therapy versus medical therapy — the trial that would confirm a second TEER platform for approval.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards PASCAL</td></tr><tr><th>Intervention</th><td>TEER + GDMT</td></tr><tr><th>Comparator</th><td>GDMT alone</td></tr><tr><th>Population</th><td>Severe symptomatic TR</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>pivotal target</td></tr><tr><th>Enrollment</th><td>ongoing</td></tr><tr><th>Follow-up</th><td>1 year+</td></tr><tr><th>Trial type</th><td>Randomized</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety/effectiveness vs medical therapy.</p></section>
+      <section><h3>Secondary endpoints</h3><p class='empty'>—</p></section>
+      <section><h3>Key results</h3><ul class='results'><li>Pending — trial ongoing</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Would establish PASCAL as an approved T-TEER option.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Watch how PASCAL vs TriClip outcomes compare in tricuspid anatomy.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Not yet reporting</li><li>NCT unconfirmed here</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>TEER</dd>
+          <dt>Sample</dt><dd>pivotal target</dd>
+          <dt>Follow-up</dt><dd>1 year+</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Pending.</p>
+        <p class="lab">ESC / EACTS</p><p>Pending.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Potential PASCAL tricuspid approval.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Status: ongoing</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details></div></details><details class='group' data-cat="Tricuspid Transcatheter Replacement (TTVR)" style='--hue:#4E63B6' open><summary class='grouphead'><span class='gchev' aria-hidden='true'></span><span class='dot'></span>Tricuspid Transcatheter Replacement (TTVR)<span class='gcount'>3</span></summary><div class='rows'><details class="row" style="--hue:#4E63B6" data-cat="Tricuspid Transcatheter Replacement (TTVR)"
+         data-status="ongoing" data-signal="descriptive"
+         data-pc="0" data-search="lux-valve lux-valve / lux-valve plus transcatheter tricuspid replacement program jenscare lux-valve / lux-valve plus none (single-arm) severe symptomatic tr, high surgical risk  tricuspid transcatheter replacement (ttvr) lux-valve ttvr frontier">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">LuX-Valve <span class='cav-dot' title='See caveat inside'>⚠</span></span>
+      <span class="row-name">LuX-Valve / LuX-Valve Plus Transcatheter Tricuspid Replacement Program</span>
+    </span>
+    <span class="row-take">A distinct TTVR design worth tracking as it moves toward transfemoral delivery and wider study.</span>
+    <span class="row-meta"><span class='badge status-ongoing'>🔵 Ongoing</span><span class='dates'><span class='d-enr'>Enrolled late 2010s–ongoing</span><span class='d-pub'>Not yet published</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar none'>Not yet published — trial ongoing.</div>
+  <div class='d-caveat'>⚠ Primarily Chinese experience; Western pivotal data limited. NCT not confirmed here.</div>
+  <p class="d-summary">A non-radial-force tricuspid replacement anchored to the interventricular septum; early (mainly Chinese) experience shows high TR elimination, with transfemoral (LuX-Valve Plus) iterations advancing.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Jenscare LuX-Valve / LuX-Valve Plus</td></tr><tr><th>Intervention</th><td>Transcatheter tricuspid replacement</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe symptomatic TR, high surgical risk</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>not fully extracted</td></tr><tr><th>Enrollment</th><td>late 2010s–ongoing</td></tr><tr><th>Follow-up</th><td>ongoing</td></tr><tr><th>Trial type</th><td>Single-arm / early studies</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety and TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><p class='empty'>—</p></section>
+      <section><h3>Key results</h3><ul class='results'><li>High TR elimination in early series; broader/Western data still limited</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Septal-anchoring design avoids radial force on the annulus.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>LuX-Valve Plus moves to transjugular/transfemoral delivery.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Limited Western data</li><li>NCT unconfirmed here</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Transcatheter tricuspid replacement</dd>
+          <dt>Sample</dt><dd>not fully extracted</dd>
+          <dt>Follow-up</dt><dd>ongoing</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Investigational.</p>
+        <p class="lab">ESC / EACTS</p><p>Investigational.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Not FDA-approved.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Early series and iterations ongoing</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#4E63B6" data-cat="Tricuspid Transcatheter Replacement (TTVR)"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="triscend edwards evoque tricuspid valve replacement early feasibility study edwards evoque none (single-arm) severe symptomatic tr, high surgical risk nct04221490 tricuspid transcatheter replacement (ttvr) evoque ttvr transfemoral single-arm">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRISCEND </span>
+      <span class="row-name">Edwards EVOQUE Tricuspid Valve Replacement Early Feasibility Study</span>
+    </span>
+    <span class="row-take">EVOQUE showed that transcatheter tricuspid replacement can nearly abolish TR.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2019–2021</span><span class='d-pub'>Published 2023</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=TRISCEND%20AND%20%22Kodali%20S%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT04221490' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Kodali S, Hahn RT, et al. · <em>Journal of the American College of Cardiology</em> · 2023</span></div>
+  
+  <p class="d-summary">The feasibility study of transfemoral EVOQUE tricuspid replacement showed near-elimination of TR with strong functional gains — establishing dedicated TTVR as viable.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards EVOQUE</td></tr><tr><th>Intervention</th><td>Transcatheter tricuspid replacement</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe symptomatic TR, high surgical risk</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>132 (feasibility)</td></tr><tr><th>Enrollment</th><td>2019–2021</td></tr><tr><th>Follow-up</th><td>30 days, 6 months, 1 year</td></tr><tr><th>Trial type</th><td>Prospective single-arm (EFS)</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>30-day safety and TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>TR grade ≤mild</li><li>NYHA / 6-minute walk</li><li>KCCQ</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>~98% achieved TR ≤mild</li><li>Marked functional and quality-of-life improvement</li><li>Pacemaker implantation and bleeding are the main trade-offs</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Established dedicated TTVR; basis for the TRISCEND II pivotal.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Replacement abolishes TR more completely than repair — at the cost of anticoagulation/pacemakers.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Single-arm</li><li>New-pacemaker and bleeding risk</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Transcatheter tricuspid replacement</dd>
+          <dt>Sample</dt><dd>132 (feasibility)</dd>
+          <dt>Follow-up</dt><dd>30 days, 6 months, 1 year</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Feasibility basis for TTVR.</p>
+        <p class="lab">ESC / EACTS</p><p>Supported CE mark.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Breakthrough-device program; precursor to TRISCEND II.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2019–2021</li><li>Published: JACC 2023</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#4E63B6" data-cat="Tricuspid Transcatheter Replacement (TTVR)"
+         data-status="published" data-signal="positive"
+         data-pc="1" data-search="triscend ii edwards evoque tricuspid valve replacement pivotal trial edwards evoque optimal medical therapy severe or torrential tr, symptomatic nct04482062 tricuspid transcatheter replacement (ttvr) evoque ttvr vs gdmt rct fda-approved 2024">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRISCEND II </span>
+      <span class="row-name">Edwards EVOQUE Tricuspid Valve Replacement Pivotal Trial</span>
+    </span>
+    <span class="row-take">EVOQUE is the first FDA-approved tricuspid replacement, with the strongest win ratio in the field.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2021–2023</span><span class='d-pub'>Published 2025</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=TRISCEND%20II%20AND%20%22Hahn%20RT%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT04482062' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Hahn RT, Makkar R, Kodali S, et al. · <em>New England Journal of Medicine</em> · 2025</span></div>
+  
+  <p class="d-summary">The first randomized TTVR trial: EVOQUE plus medical therapy was superior to medical therapy on a hierarchical composite (win ratio ~2.0), with near-complete TR elimination — basis for the first FDA-approved tricuspid replacement.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards EVOQUE</td></tr><tr><th>Intervention</th><td>TTVR + GDMT</td></tr><tr><th>Comparator</th><td>Optimal medical therapy</td></tr><tr><th>Population</th><td>Severe or torrential TR, symptomatic</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>400 (392 randomized)</td></tr><tr><th>Enrollment</th><td>2021–2023</td></tr><tr><th>Follow-up</th><td>6 months primary; 1 year</td></tr><tr><th>Trial type</th><td>Randomized, open-label</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Hierarchical composite (win ratio) of death, RVAD/transplant, tricuspid intervention, HF hospitalization, KCCQ, NYHA, and 6-minute walk at 1 year.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>TR grade ≤mild</li><li>KCCQ</li><li>NYHA / 6-minute walk</li><li>Safety (MAE)</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Win ratio 2.02 (95% CI 1.56–2.62, P&lt;0.001) favoring EVOQUE</li><li>~95–99% achieved TR ≤mild</li><li>More new pacemakers and bleeding with EVOQUE</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Basis for the first FDA-approved transcatheter tricuspid replacement (Feb 2024).</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Largest treatment effect in tricuspid trials — but weigh pacemaker/anticoagulation trade-offs.</li><li>Approved without an FDA advisory panel, on a prespecified 6-month analysis of the first 150 patients.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Open-label</li><li>Pacemaker and bleeding risk</li><li>Composite includes softer endpoints</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Transcatheter tricuspid replacement</dd>
+          <dt>Sample</dt><dd>400 (392 randomized)</dd>
+          <dt>Follow-up</dt><dd>6 months primary; 1 year</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Basis for FDA-approved TTVR indication.</p>
+        <p class="lab">ESC / EACTS</p><p>EVOQUE CE mark (2023); supports replacement in selected severe TR.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>EVOQUE FDA-approved February 2024 (first transcatheter tricuspid replacement); TCT 2023/2024.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2021–2023</li><li>6-month (first 150): TCT 2023</li><li>Full cohort: TCT 2024</li><li>Published: NEJM 2025</li><li>FDA approval: Feb 2024</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details></div></details><details class='group' data-cat="Tricuspid Annuloplasty" style='--hue:#8E5AB6' open><summary class='grouphead'><span class='gchev' aria-hidden='true'></span><span class='dot'></span>Tricuspid Annuloplasty<span class='gcount'>2</span></summary><div class='rows'><details class="row" style="--hue:#8E5AB6" data-cat="Tricuspid Annuloplasty"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="scout percutaneous tricuspid valve annuloplasty system for symptomatic chronic functional tr (trialign) mitralign trialign none (single-arm) symptomatic chronic functional tr nct02574650 tricuspid annuloplasty trialign direct annuloplasty single-arm early feasibility">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">SCOUT <span class='cav-dot' title='See caveat inside'>⚠</span></span>
+      <span class="row-name">Percutaneous Tricuspid Valve Annuloplasty System for Symptomatic Chronic Functional TR (Trialign)</span>
+    </span>
+    <span class="row-take">An early proof-of-concept for suture-based tricuspid annuloplasty.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2015–2016</span><span class='d-pub'>Published 2017</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=SCOUT%20AND%20%22Hahn%20RT%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT02574650' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Hahn RT, et al. · <em>Journal of the American College of Cardiology</em> · 2017</span></div>
+  <div class='d-caveat'>⚠ Early device; limited ongoing clinical development.</div>
+  <p class="d-summary">An early feasibility study of the Trialign system, which plicates the annulus to mimic a surgical Kay bicuspidization, showing reduced annular area and TR.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Mitralign Trialign</td></tr><tr><th>Intervention</th><td>Direct annuloplasty (bicuspidization)</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Symptomatic chronic functional TR</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>15 (SCOUT I)</td></tr><tr><th>Enrollment</th><td>2015–2016</td></tr><tr><th>Follow-up</th><td>30 days, 6 months</td></tr><tr><th>Trial type</th><td>Prospective single-arm (early feasibility)</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Feasibility, safety, and annular/TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>Annular area</li><li>TR grade</li><li>6-minute walk</li><li>Quality of life</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Reduced annular area and TR with functional improvement</li><li>Single-leaflet dehiscence observed in some patients</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>One of the first transcatheter tricuspid annuloplasty concepts.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Recreates a surgical Kay-type annuloplasty percutaneously.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Very small</li><li>Durability/dehiscence concerns</li><li>Limited ongoing development</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Functional tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Direct transcatheter annuloplasty (bicuspidization)</dd>
+          <dt>Sample</dt><dd>15 (SCOUT I)</dd>
+          <dt>Follow-up</dt><dd>30 days, 6 months</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Historical proof-of-concept.</p>
+        <p class="lab">ESC / EACTS</p><p>Early data.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Investigational.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2015–2016</li><li>Published: JACC 2017</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#8E5AB6" data-cat="Tricuspid Annuloplasty"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="tri-repair tricuspid regurgitation repair with cardioband device study edwards cardioband (tricuspid) none (single-arm) symptomatic functional tr, high surgical risk nct02981953 tricuspid annuloplasty cardioband direct annuloplasty single-arm ce-mark">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRI-REPAIR </span>
+      <span class="row-name">TrIcuspid Regurgitation RePAIr With Cardioband Device Study</span>
+    </span>
+    <span class="row-take">Direct annuloplasty can remodel the tricuspid annulus, but the evidence base is smaller than TEER.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2016–2017</span><span class='d-pub'>Published 2019</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=TRI-REPAIR%20AND%20%22Nickenig%20G%22%5BAuthor%5D' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT02981953' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Nickenig G, et al. · <em>EuroIntervention</em> · 2019</span></div>
+  
+  <p class="d-summary">Direct transcatheter annuloplasty of the tricuspid annulus with Cardioband reduced annular size and TR with durable symptom improvement — a repair-based alternative to TEER and replacement.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards Cardioband (tricuspid)</td></tr><tr><th>Intervention</th><td>Direct annuloplasty</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Symptomatic functional TR, high surgical risk</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>30</td></tr><tr><th>Enrollment</th><td>2016–2017</td></tr><tr><th>Follow-up</th><td>6 months, 1 year, 2 years</td></tr><tr><th>Trial type</th><td>Prospective single-arm, multicenter</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety and annular/TR reduction.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>Septolateral annular diameter</li><li>TR grade</li><li>NYHA / 6-minute walk</li><li>KCCQ</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Significant annular reduction and TR improvement</li><li>Durable functional gains through 2 years</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>CE-mark tricuspid annuloplasty option; leaflet- and anatomy-preserving.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Preserves future TEER/replacement options.</li><li>Right coronary artery course is a key procedural consideration.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Small single-arm</li><li>Technically demanding</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Secondary tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Direct transcatheter annuloplasty</dd>
+          <dt>Sample</dt><dd>30</dd>
+          <dt>Follow-up</dt><dd>6 months, 1 year, 2 years</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Not routine; anatomy-selected option.</p>
+        <p class="lab">ESC / EACTS</p><p>CE-mark device.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Investigational in the US.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2016–2017</li><li>Published: EuroIntervention / JACC 2019–2021</li><li>CE mark obtained</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details></div></details><details class='group' data-cat="Tricuspid Heterotopic / Caval" style='--hue:#B65AA0' open><summary class='grouphead'><span class='gchev' aria-hidden='true'></span><span class='dot'></span>Tricuspid Heterotopic / Caval<span class='gcount'>2</span></summary><div class='rows'><details class="row" style="--hue:#B65AA0" data-cat="Tricuspid Heterotopic / Caval"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="hover heterotopic implantation of the sapien valve in the inferior vena cava for severe tr edwards sapien (in ivc) none (single-arm) severe tr, inoperable / very high risk nct02339974 tricuspid heterotopic / caval sapien ivc caval heterotopic off-label single-arm">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">HOVER <span class='cav-dot' title='See caveat inside'>⚠</span></span>
+      <span class="row-name">Heterotopic Implantation of the SAPIEN Valve in the Inferior Vena Cava for Severe TR</span>
+    </span>
+    <span class="row-take">Proof-of-concept that an off-the-shelf valve in the IVC can palliate TR-related congestion.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2015–2019</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink search' href='https://pubmed.ncbi.nlm.nih.gov/?term=Heterotopic%20Implantation%20of%20the%20SAPIEN%20Valve%20in%20the%20Inferior%20Vena%20Cava%20for%20Severe%20TR%20Tricuspid' target='_blank' rel='noopener'>Find on PubMed ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT02339974' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div></div>
+  <div class='d-caveat'>⚠ Off-label use of a commercially available valve; very small feasibility study.</div>
+  <p class="d-summary">A feasibility study implanting a balloon-expandable SAPIEN valve in the inferior vena cava to palliate right-heart congestion from severe TR in inoperable patients.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>Edwards SAPIEN (in IVC)</td></tr><tr><th>Intervention</th><td>Single-site caval valve implantation</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe TR, inoperable / very high risk</td></tr><tr><th>Risk group</th><td>Prohibitive surgical risk</td></tr><tr><th>Sample size</th><td>15 (planned)</td></tr><tr><th>Enrollment</th><td>2015–2019</td></tr><tr><th>Follow-up</th><td>30 days, 6 months</td></tr><tr><th>Trial type</th><td>Prospective single-arm feasibility</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>30-day safety; 6-month symptom palliation.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>NYHA class</li><li>Congestion symptoms</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Feasible IVC implantation with symptom palliation in selected patients</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Early demonstration of single-site caval valve implantation.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Palliative — addresses congestion, not the tricuspid valve.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Very small</li><li>Off-label device use</li><li>Palliative intent</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Severe tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Single-site caval valve implantation (IVC)</dd>
+          <dt>Sample</dt><dd>15 (planned)</dd>
+          <dt>Follow-up</dt><dd>30 days, 6 months</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Historical proof-of-concept.</p>
+        <p class="lab">ESC / EACTS</p><p>Early data.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Off-label.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2015–2019</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details><details class="row" style="--hue:#B65AA0" data-cat="Tricuspid Heterotopic / Caval"
+         data-status="published" data-signal="descriptive"
+         data-pc="0" data-search="tricus euro safety and efficacy of the tricvalve transcatheter bicaval valves system (tricus euro) p+f tricvalve none (single-arm) severe symptomatic tr, high surgical risk, significant caval backflow nct04141137 tricuspid heterotopic / caval tricvalve bicaval / cavi heterotopic single-arm ce-mark">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TRICUS EURO </span>
+      <span class="row-name">Safety and Efficacy of the TricValve Transcatheter Bicaval Valves System (TRICUS EURO)</span>
+    </span>
+    <span class="row-take">Caval valve implantation palliates congestion when the valve itself can&#x27;t be repaired or replaced.</span>
+    <span class="row-meta"><span class='badge status-published'>🟢 Published</span><span class='dates'><span class='d-enr'>Enrolled 2019–2021</span><span class='d-pub'>Published 2022</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink primary' href='https://doi.org/10.1016/j.jcin.2022.05.022' target='_blank' rel='noopener'>Read paper (DOI) ↗</a><a class='plink registry' href='https://clinicaltrials.gov/study/NCT04141137' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div><span class='paper-cite'>Estévez-Loureiro R, et al. · <em>JACC: Cardiovascular Interventions</em> · 2022</span></div>
+  
+  <p class="d-summary">A dedicated bicaval valve system (SVC + IVC) that treats the congestive consequences of severe TR rather than the valve itself; improved symptoms and quality of life at 6–12 months in high-risk patients — the basis for CE mark.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>P+F TricValve</td></tr><tr><th>Intervention</th><td>Bicaval valve implantation (CAVI)</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe symptomatic TR, high surgical risk, significant caval backflow</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>35 (44 pooled with first-in-human)</td></tr><tr><th>Enrollment</th><td>2019–2021</td></tr><tr><th>Follow-up</th><td>30 days, 6 months, 1 year</td></tr><tr><th>Trial type</th><td>Prospective single-arm, multicenter</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>30-day safety; 6-month quality-of-life and functional status.</p></section>
+      <section><h3>Secondary endpoints</h3><ul class='bul'><li>NYHA class</li><li>KCCQ</li><li>Caval backflow</li><li>Right-heart congestion markers</li></ul></section>
+      <section><h3>Key results</h3><ul class='results'><li>Significant quality-of-life and functional improvement at 6–12 months</li><li>Does not reduce true tricuspid TR — treats caval backflow/congestion</li><li>Mortality aligned with baseline TRI-SCORE</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Offers a palliative option for patients unsuitable for TEER or orthotopic replacement.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Treats symptoms of congestion, not the regurgitation — set expectations accordingly.</li><li>Useful when coaptation gaps or anatomy preclude TEER/replacement.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Small single-arm</li><li>Does not correct TR</li><li>Palliative intent</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Severe tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Bicaval valve implantation (CAVI)</dd>
+          <dt>Sample</dt><dd>35 (44 pooled with first-in-human)</dd>
+          <dt>Follow-up</dt><dd>30 days, 6 months, 1 year</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Niche palliative option.</p>
+        <p class="lab">ESC / EACTS</p><p>CE mark (May 2021).</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Investigational in the US.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Enrollment: 2019–2021</li><li>Published: JACC Cardiovasc Interv 2022;15:1366-1377</li><li>CE mark: May 2021</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details></div></details><details class='group' data-cat="Tricuspid Frontier / Next-Gen Device" style='--hue:#5A78B6' open><summary class='grouphead'><span class='gchev' aria-hidden='true'></span><span class='dot'></span>Tricuspid Frontier / Next-Gen Device<span class='gcount'>1</span></summary><div class='rows'><details class="row" style="--hue:#5A78B6" data-cat="Tricuspid Frontier / Next-Gen Device"
+         data-status="ongoing" data-signal="pending"
+         data-pc="0" data-search="tandem i (croívalve) european feasibility study of the croívalve duo transcatheter tricuspid coaptation valve system croívalve duo none (single-arm) severe symptomatic tr nct05296148 tricuspid frontier / next-gen device croívalve duo coaptation valve single-arm ongoing">
+  <summary>
+    <span class="chev" aria-hidden="true"></span>
+    <span class="row-id">
+      <span class="row-acr">TANDEM I (CroíValve) </span>
+      <span class="row-name">European Feasibility Study of the CroíValve DUO Transcatheter Tricuspid Coaptation Valve System</span>
+    </span>
+    <span class="row-take">A novel coaptation-valve concept to watch in the crowded tricuspid frontier.</span>
+    <span class="row-meta"><span class='badge status-ongoing'>🔵 Ongoing</span><span class='dates'><span class='d-enr'>Enrolled 2022–ongoing</span><span class='d-pub'>Not yet published</span></span></span>
+  </summary>
+  <div class="body-inner">
+  <div class='paperbar'><div class='plinks'><a class='plink registry' href='https://clinicaltrials.gov/study/NCT05296148' target='_blank' rel='noopener'>ClinicalTrials.gov ↗</a></div></div>
+  
+  <p class="d-summary">An early feasibility study of a coaptation-valve system that anchors in the SVC and places a spacer at the tricuspid annulus — a hybrid concept between caval and orthotopic approaches.</p>
+  <div class="d-grid">
+    <div class="d-main">
+      <section><h3>Study overview</h3><table class='overview'><tbody><tr><th>Device</th><td>CroíValve DUO</td></tr><tr><th>Intervention</th><td>Transcatheter tricuspid coaptation valve</td></tr><tr><th>Comparator</th><td>None (single-arm)</td></tr><tr><th>Population</th><td>Severe symptomatic TR</td></tr><tr><th>Risk group</th><td>High surgical risk</td></tr><tr><th>Sample size</th><td>early feasibility</td></tr><tr><th>Enrollment</th><td>2022–ongoing</td></tr><tr><th>Follow-up</th><td>ongoing</td></tr><tr><th>Trial type</th><td>Prospective single-arm (EFS)</td></tr></tbody></table></section>
+      <section><h3>Inclusion criteria</h3><p class='empty'>—</p></section>
+      <section><h3>Primary endpoint</h3><p>Safety and performance.</p></section>
+      <section><h3>Secondary endpoints</h3><p class='empty'>—</p></section>
+      <section><h3>Key results</h3><ul class='results'><li>Pending — early feasibility ongoing</li></ul></section>
+      <section><h3>Why this trial matters</h3><p>Represents the diversity of next-generation tricuspid approaches.</p></section>
+      <section><h3>Clinical pearls</h3><ul class='bul'><li>Combines a caval anchor with an annular coaptation element.</li></ul></section>
+      <section><h3>Limitations</h3><ul class='bul'><li>Very early stage</li><li>Not yet reporting</li></ul></section>
+    </div>
+    <aside class="d-side">
+      <div class="qf"><h4>Quick facts</h4>
+        <dl>
+          <dt>Valve</dt><dd>Tricuspid</dd>
+          <dt>Disease</dt><dd>Tricuspid regurgitation</dd>
+          <dt>Procedure</dt><dd>Transcatheter tricuspid coaptation valve</dd>
+          <dt>Sample</dt><dd>early feasibility</dd>
+          <dt>Follow-up</dt><dd>ongoing</dd>
+        </dl>
+      </div>
+      <div class="qf"><h4>Guidelines</h4>
+        <p class="lab">ACC / AHA</p><p>Pending.</p>
+        <p class="lab">ESC / EACTS</p><p>Pending.</p>
+      </div>
+      <div class="qf"><h4>FDA / regulatory</h4><p>Early feasibility.</p></div>
+      <div class="qf"><h4>Timeline</h4><ul class='bul'><li>Started: 2022</li><li>Status: ongoing</li></ul></div>
+    </aside>
+  </div>
+</div>
+</details></div></details>
+  <p id="noresults" class="noresults">No trials match those filters. Clear the search or pick “All”.</p>
+</main>
+
+<footer class="pagefoot">
+  ValveTrials.com — a cardiology valve-trial reference. Paper links point to the verified DOI or PubMed
+  record; where none was verified, a “Find on PubMed” search link is provided instead of a fabricated one.
+  Negative-result trials are excluded from list views (still present in <span class="mono">trials_data.py</span>).
+  ⚠ flags provisional or context items. A reference aid, not clinical advice.
+</footer>
+<script>
 const $ = s => document.querySelector(s);
 const rows = Array.from(document.querySelectorAll('details.row'));
 const groups = Array.from(document.querySelectorAll('details.group'));
@@ -1026,23 +941,6 @@ document.querySelectorAll('.seg[data-group]').forEach(seg=>{
 $('#expandAll').addEventListener('click',()=>{groups.forEach(g=>g.open=true);rows.forEach(r=>{if(r.style.display!=='none')r.open=true;});});
 $('#collapseAll').addEventListener('click',()=>{rows.forEach(r=>r.open=false);groups.forEach(g=>g.open=false);});
 apply();
-"""
-
-
-def main():
-    outdir = sys.argv[1] if len(sys.argv) > 1 else "."
-    os.makedirs(outdir, exist_ok=True)
-    pages = {"index.html": build_home(), "editor.html": build_editor_page()}
-    for k, *_ in VALVES:
-        pages[f"{k}.html"] = (build_valve_list_page(k) if trials_for(k)
-                              else build_coming_soon_page(k))
-    for name, content in pages.items():
-        with open(os.path.join(outdir, name), "w", encoding="utf-8") as f:
-            f.write(content)
-    counts = {k: len(trials_for(k)) for k, *_ in VALVES}
-    print("Wrote:", ", ".join(pages))
-    print("Trial counts:", counts)
-
-
-if __name__ == "__main__":
-    main()
+</script>
+</body>
+</html>
