@@ -1,0 +1,899 @@
+[
+  {
+    "acronym": "TRILUMINATE",
+    "full_name": "Trial to Evaluate Treatment With Abbott Transcatheter Clip Repair System in Patients With Moderate or Greater TR (Single-Arm)",
+    "nct": "NCT03227757",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "TriClip",
+      "TEER",
+      "Single-arm",
+      "Feasibility",
+      "CE-mark"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": true,
+    "evidence_stars": 0,
+    "quick_summary": "The single-arm feasibility study that established transcatheter edge-to-edge repair of the tricuspid valve as feasible and safe, reducing TR and improving symptoms — the basis for CE mark.",
+    "takeaway": "Proved tricuspid TEER was feasible and safe, launching the modern T-TEER era.",
+    "device": "Abbott TriClip",
+    "intervention": "TEER",
+    "comparator": "None (single-arm)",
+    "population": "Moderate or greater symptomatic TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "85",
+    "enrollment": "2017–2018",
+    "follow_up": "30 days, 1 year, 3 years",
+    "trial_type": "Prospective single-arm, multicenter",
+    "valve": "Tricuspid",
+    "disease": "Secondary tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Safety and reduction in TR severity.",
+    "secondary_endpoints": [
+      "NYHA class",
+      "6-minute walk",
+      "Quality of life",
+      "Right-heart remodeling"
+    ],
+    "key_results": [
+      "Significant TR reduction with a strong safety profile",
+      "Durable symptom and functional improvement through 3 years"
+    ],
+    "why_matters": "First convincing tricuspid TEER dataset; led to CE mark (2020).",
+    "pearls": [
+      "Used the first-generation clip in a highly selected population."
+    ],
+    "limitations": [
+      "Single-arm",
+      "Selected anatomy",
+      "First-generation device"
+    ],
+    "guideline_acc": "Feasibility basis for T-TEER.",
+    "guideline_esc": "Supported CE mark.",
+    "fda_impact": "CE mark 2020; precursor to the US pivotal.",
+    "timeline": [
+      "Enrollment: 2017–2018",
+      "Published: Lancet 2019",
+      "CE mark: 2020"
+    ],
+    "authors": "Nickenig G, et al.",
+    "journal": "The Lancet",
+    "year": "2019",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "TRILUMINATE Pivotal",
+    "full_name": "TRILUMINATE Pivotal Trial of Tricuspid TEER vs Medical Therapy",
+    "nct": "NCT03904147",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "TriClip",
+      "TEER",
+      "vs GDMT",
+      "RCT",
+      "FDA-approved 2024"
+    ],
+    "status": "published",
+    "signal": "positive",
+    "practice_changing": true,
+    "landmark": true,
+    "evidence_stars": 0,
+    "quick_summary": "The first randomized tricuspid TEER trial: TriClip beat medical therapy on a hierarchical composite driven mainly by quality-of-life improvement, with excellent safety and durable TR reduction — the basis for FDA approval.",
+    "takeaway": "Established tricuspid TEER as an FDA-approved therapy; benefit is real but largely symptomatic/QoL.",
+    "device": "Abbott TriClip",
+    "intervention": "TEER",
+    "comparator": "Guideline-directed medical therapy",
+    "population": "Severe symptomatic TR, intermediate-or-greater surgical risk",
+    "risk_group": "Intermediate+ surgical risk",
+    "sample_size": "350 (175 / 175) + single-arm",
+    "enrollment": "2019–2021",
+    "follow_up": "1 and 2 years",
+    "trial_type": "Randomized, open-label",
+    "valve": "Tricuspid",
+    "disease": "Secondary tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Hierarchical composite (win ratio) of death/tricuspid surgery, HF hospitalization, and KCCQ change at 1 year.",
+    "secondary_endpoints": [
+      "TR grade ≤moderate",
+      "KCCQ",
+      "NYHA / 6-minute walk",
+      "Safety (MAE)"
+    ],
+    "key_results": [
+      "Win ratio 1.48 (95% CI 1.06–2.13, P=0.02), driven by quality of life",
+      "TR reduced to moderate-or-less in ~90% at 30 days, sustained at 1 year",
+      ">98% free from major adverse events at 30 days",
+      "No significant reduction in death or HF hospitalization"
+    ],
+    "why_matters": "Practice-changing: basis for FDA approval of TriClip (April 2024).",
+    "pearls": [
+      "Benefit is predominantly symptomatic/QoL — counsel expectations accordingly.",
+      "TR reduction is durable and the procedure is remarkably safe."
+    ],
+    "limitations": [
+      "Open-label",
+      "Composite driven by KCCQ, not hard outcomes"
+    ],
+    "guideline_acc": "Basis for FDA-approved T-TEER indication.",
+    "guideline_esc": "Supports TEER in selected severe TR.",
+    "fda_impact": "TriClip FDA-approved April 2, 2024 (first tricuspid TEER); presented ACC.23.",
+    "timeline": [
+      "Enrollment: 2019–2021",
+      "Published: NEJM 2023 (ACC.23)",
+      "1-year: JACC 2025;85:235-246",
+      "2-year: Circulation 2025",
+      "FDA approval: Apr 2024"
+    ],
+    "authors": "Sorajja P, Whisenant B, Hamid N, et al.",
+    "journal": "New England Journal of Medicine",
+    "year": "2023",
+    "doi": "10.1056/NEJMoa2300525",
+    "pmid": "36876753",
+    "caveat": ""
+  },
+  {
+    "acronym": "TRI-FR",
+    "full_name": "Multicentric Randomized Evaluation of Tricuspid TEER in Severe Secondary TR (Tri.Fr)",
+    "nct": "NCT04646811",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "TriClip G4",
+      "TEER",
+      "vs GDMT",
+      "RCT",
+      "Investigator-led"
+    ],
+    "status": "published",
+    "signal": "positive",
+    "practice_changing": true,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A French/Belgian investigator-led RCT: tricuspid TEER plus medical therapy improved a clinical composite (symptoms, TR, functional status) versus medical therapy alone — the second positive randomized T-TEER trial.",
+    "takeaway": "Independent randomized confirmation that tricuspid TEER improves symptoms and functional status.",
+    "device": "Abbott TriClip G4",
+    "intervention": "TEER + GDMT",
+    "comparator": "GDMT alone",
+    "population": "Severe isolated secondary TR, ineligible for surgery",
+    "risk_group": "High surgical risk",
+    "sample_size": "300",
+    "enrollment": "2021–2023",
+    "follow_up": "1 year",
+    "trial_type": "Randomized, open-label",
+    "valve": "Tricuspid",
+    "disease": "Secondary tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Packer clinical composite score (improved / unchanged / worse) at 1 year.",
+    "secondary_endpoints": [
+      "Patient global assessment",
+      "TR grade",
+      "6-minute walk",
+      "KCCQ"
+    ],
+    "key_results": [
+      "Composite improvement 74.6% (TEER) vs 39.5% (GDMT); effect estimate 0.68 (P<0.0001)",
+      "Technical success 97.3%; in-hospital mortality 0.6%",
+      "Most patients required 2 devices"
+    ],
+    "why_matters": "Sponsor-independent confirmation of TRILUMINATE Pivotal's QoL/functional benefit.",
+    "pearls": [
+      "Government-funded trial — reduces industry-sponsorship concerns.",
+      "Reinforces that the benefit is symptomatic/functional."
+    ],
+    "limitations": [
+      "Open-label",
+      "Composite is symptom/QoL-weighted"
+    ],
+    "guideline_acc": "Strengthens the T-TEER evidence base.",
+    "guideline_esc": "Supports TEER in secondary TR.",
+    "fda_impact": "Not a US registration trial (European).",
+    "timeline": [
+      "Enrollment: 2021–2023",
+      "Presented: ESC 2024"
+    ],
+    "authors": "Donal E, et al.",
+    "journal": "ESC 2024 (peer-reviewed publication)",
+    "year": "2024",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "bRIGHT",
+    "full_name": "Real-World Outcomes of Tricuspid TEER With TriClip (bRIGHT Study)",
+    "nct": "",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "TriClip",
+      "TEER",
+      "Registry",
+      "Real-world"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A European post-market registry showing that tricuspid TEER reduces TR safely and durably across a broad range of real-world anatomies and centers.",
+    "takeaway": "Real-world data confirm the safety and TR-reduction seen in the randomized trials.",
+    "device": "Abbott TriClip / TriClip G4",
+    "intervention": "TEER",
+    "comparator": "Registry",
+    "population": "Severe symptomatic TR in routine practice",
+    "risk_group": "Mixed / high risk",
+    "sample_size": "registry cohort",
+    "enrollment": "2020–2023",
+    "follow_up": "30 days, 1 year, 2 years",
+    "trial_type": "Prospective post-market registry",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Real-world safety and TR reduction.",
+    "secondary_endpoints": [
+      "NYHA / KCCQ",
+      "Durability",
+      "Procedural success"
+    ],
+    "key_results": [
+      "Significant, durable TR reduction across broad anatomies",
+      "Safety consistent with the randomized trials"
+    ],
+    "why_matters": "Provides generalizability for the RCT findings.",
+    "pearls": [
+      "Broader/less-selected patients and centers than TRILUMINATE."
+    ],
+    "limitations": [
+      "Non-randomized registry",
+      "Shorter-term outcomes"
+    ],
+    "guideline_acc": "Supportive real-world evidence.",
+    "guideline_esc": "Generalizability data.",
+    "fda_impact": "Real-world support for T-TEER.",
+    "timeline": [
+      "Published: JACC 2024;84:607-616 (1-year)"
+    ],
+    "authors": "Lurz P, Rommel KP, Schmitz T, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2024",
+    "doi": "10.1016/j.jacc.2024.05.006",
+    "pmid": "",
+    "caveat": "Post-market registry (not a dedicated NCT here)."
+  },
+  {
+    "acronym": "CLASP TR EFS",
+    "full_name": "Edwards PASCAL Tricuspid Repair System Early Feasibility Study",
+    "nct": "NCT03745313",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "PASCAL",
+      "TEER",
+      "Single-arm",
+      "Feasibility"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "Early feasibility of the PASCAL system for tricuspid TEER, showing durable TR reduction and functional improvement — the PASCAL counterpart to the TriClip program.",
+    "takeaway": "PASCAL is the second viable tricuspid TEER platform.",
+    "device": "Edwards PASCAL / PASCAL Ace",
+    "intervention": "TEER",
+    "comparator": "None (single-arm)",
+    "population": "Severe symptomatic TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "early feasibility cohort",
+    "enrollment": "2019–2021",
+    "follow_up": "30 days, 1 year, 2 years",
+    "trial_type": "Prospective single-arm (EFS)",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Safety and performance / TR reduction.",
+    "secondary_endpoints": [
+      "TR grade",
+      "NYHA / 6-minute walk",
+      "KCCQ"
+    ],
+    "key_results": [
+      "Durable TR reduction and functional improvement with good safety"
+    ],
+    "why_matters": "Feasibility basis for the PASCAL tricuspid pivotal (CLASP II TR).",
+    "pearls": [
+      "Independent leaflet grasping and a central spacer suit large tricuspid gaps."
+    ],
+    "limitations": [
+      "Single-arm",
+      "Small cohort"
+    ],
+    "guideline_acc": "Feasibility evidence.",
+    "guideline_esc": "Supported CE-mark program.",
+    "fda_impact": "Precursor to CLASP II TR pivotal.",
+    "timeline": [
+      "Enrollment: 2019–2021",
+      "Published: JACC 2021 / JACC Cardiovasc Interv"
+    ],
+    "authors": "Kodali S, Hahn RT, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2021",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "CLASP II TR",
+    "full_name": "Edwards PASCAL Tricuspid Repair System Pivotal Trial",
+    "nct": "",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "PASCAL",
+      "TEER",
+      "Pivotal",
+      "Ongoing"
+    ],
+    "status": "ongoing",
+    "signal": "pending",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "The pivotal randomized trial of PASCAL tricuspid TEER plus medical therapy versus medical therapy — the trial that would confirm a second TEER platform for approval.",
+    "takeaway": "The key pivotal that could bring PASCAL to FDA approval for tricuspid TEER.",
+    "device": "Edwards PASCAL",
+    "intervention": "TEER + GDMT",
+    "comparator": "GDMT alone",
+    "population": "Severe symptomatic TR",
+    "risk_group": "High surgical risk",
+    "sample_size": "pivotal target",
+    "enrollment": "ongoing",
+    "follow_up": "1 year+",
+    "trial_type": "Randomized",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "TEER",
+    "inclusion": [],
+    "primary_endpoint": "Safety/effectiveness vs medical therapy.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "Pending — trial ongoing"
+    ],
+    "why_matters": "Would establish PASCAL as an approved T-TEER option.",
+    "pearls": [
+      "Watch how PASCAL vs TriClip outcomes compare in tricuspid anatomy."
+    ],
+    "limitations": [
+      "Not yet reporting",
+      "NCT unconfirmed here"
+    ],
+    "guideline_acc": "Pending.",
+    "guideline_esc": "Pending.",
+    "fda_impact": "Potential PASCAL tricuspid approval.",
+    "timeline": [
+      "Status: ongoing"
+    ],
+    "authors": "",
+    "journal": "",
+    "year": "",
+    "doi": "",
+    "pmid": "",
+    "caveat": "NCT not confirmed here."
+  },
+  {
+    "acronym": "TRISCEND",
+    "full_name": "Edwards EVOQUE Tricuspid Valve Replacement Early Feasibility Study",
+    "nct": "NCT04221490",
+    "category": "Tricuspid Transcatheter Replacement (TTVR)",
+    "tags": [
+      "EVOQUE",
+      "TTVR",
+      "Transfemoral",
+      "Single-arm"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": true,
+    "evidence_stars": 0,
+    "quick_summary": "The feasibility study of transfemoral EVOQUE tricuspid replacement showed near-elimination of TR with strong functional gains — establishing dedicated TTVR as viable.",
+    "takeaway": "EVOQUE showed that transcatheter tricuspid replacement can nearly abolish TR.",
+    "device": "Edwards EVOQUE",
+    "intervention": "Transcatheter tricuspid replacement",
+    "comparator": "None (single-arm)",
+    "population": "Severe symptomatic TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "132 (feasibility)",
+    "enrollment": "2019–2021",
+    "follow_up": "30 days, 6 months, 1 year",
+    "trial_type": "Prospective single-arm (EFS)",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid replacement",
+    "inclusion": [],
+    "primary_endpoint": "30-day safety and TR reduction.",
+    "secondary_endpoints": [
+      "TR grade ≤mild",
+      "NYHA / 6-minute walk",
+      "KCCQ"
+    ],
+    "key_results": [
+      "~98% achieved TR ≤mild",
+      "Marked functional and quality-of-life improvement",
+      "Pacemaker implantation and bleeding are the main trade-offs"
+    ],
+    "why_matters": "Established dedicated TTVR; basis for the TRISCEND II pivotal.",
+    "pearls": [
+      "Replacement abolishes TR more completely than repair — at the cost of anticoagulation/pacemakers."
+    ],
+    "limitations": [
+      "Single-arm",
+      "New-pacemaker and bleeding risk"
+    ],
+    "guideline_acc": "Feasibility basis for TTVR.",
+    "guideline_esc": "Supported CE mark.",
+    "fda_impact": "Breakthrough-device program; precursor to TRISCEND II.",
+    "timeline": [
+      "Enrollment: 2019–2021",
+      "Published: JACC 2023"
+    ],
+    "authors": "Kodali S, Hahn RT, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2023",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "TRISCEND II",
+    "full_name": "Edwards EVOQUE Tricuspid Valve Replacement Pivotal Trial",
+    "nct": "NCT04482062",
+    "category": "Tricuspid Transcatheter Replacement (TTVR)",
+    "tags": [
+      "EVOQUE",
+      "TTVR",
+      "vs GDMT",
+      "RCT",
+      "FDA-approved 2024"
+    ],
+    "status": "published",
+    "signal": "positive",
+    "practice_changing": true,
+    "landmark": true,
+    "evidence_stars": 0,
+    "quick_summary": "The first randomized TTVR trial: EVOQUE plus medical therapy was superior to medical therapy on a hierarchical composite (win ratio ~2.0), with near-complete TR elimination — basis for the first FDA-approved tricuspid replacement.",
+    "takeaway": "EVOQUE is the first FDA-approved tricuspid replacement, with the strongest win ratio in the field.",
+    "device": "Edwards EVOQUE",
+    "intervention": "TTVR + GDMT",
+    "comparator": "Optimal medical therapy",
+    "population": "Severe or torrential TR, symptomatic",
+    "risk_group": "High surgical risk",
+    "sample_size": "400 (392 randomized)",
+    "enrollment": "2021–2023",
+    "follow_up": "6 months primary; 1 year",
+    "trial_type": "Randomized, open-label",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid replacement",
+    "inclusion": [],
+    "primary_endpoint": "Hierarchical composite (win ratio) of death, RVAD/transplant, tricuspid intervention, HF hospitalization, KCCQ, NYHA, and 6-minute walk at 1 year.",
+    "secondary_endpoints": [
+      "TR grade ≤mild",
+      "KCCQ",
+      "NYHA / 6-minute walk",
+      "Safety (MAE)"
+    ],
+    "key_results": [
+      "Win ratio 2.02 (95% CI 1.56–2.62, P<0.001) favoring EVOQUE",
+      "~95–99% achieved TR ≤mild",
+      "More new pacemakers and bleeding with EVOQUE"
+    ],
+    "why_matters": "Basis for the first FDA-approved transcatheter tricuspid replacement (Feb 2024).",
+    "pearls": [
+      "Largest treatment effect in tricuspid trials — but weigh pacemaker/anticoagulation trade-offs.",
+      "Approved without an FDA advisory panel, on a prespecified 6-month analysis of the first 150 patients."
+    ],
+    "limitations": [
+      "Open-label",
+      "Pacemaker and bleeding risk",
+      "Composite includes softer endpoints"
+    ],
+    "guideline_acc": "Basis for FDA-approved TTVR indication.",
+    "guideline_esc": "EVOQUE CE mark (2023); supports replacement in selected severe TR.",
+    "fda_impact": "EVOQUE FDA-approved February 2024 (first transcatheter tricuspid replacement); TCT 2023/2024.",
+    "timeline": [
+      "Enrollment: 2021–2023",
+      "6-month (first 150): TCT 2023",
+      "Full cohort: TCT 2024",
+      "Published: NEJM 2025",
+      "FDA approval: Feb 2024"
+    ],
+    "authors": "Hahn RT, Makkar R, Kodali S, et al.",
+    "journal": "New England Journal of Medicine",
+    "year": "2025",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "LuX-Valve",
+    "full_name": "LuX-Valve / LuX-Valve Plus Transcatheter Tricuspid Replacement Program",
+    "nct": "",
+    "category": "Tricuspid Transcatheter Replacement (TTVR)",
+    "tags": [
+      "LuX-Valve",
+      "TTVR",
+      "Frontier"
+    ],
+    "status": "ongoing",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A non-radial-force tricuspid replacement anchored to the interventricular septum; early (mainly Chinese) experience shows high TR elimination, with transfemoral (LuX-Valve Plus) iterations advancing.",
+    "takeaway": "A distinct TTVR design worth tracking as it moves toward transfemoral delivery and wider study.",
+    "device": "Jenscare LuX-Valve / LuX-Valve Plus",
+    "intervention": "Transcatheter tricuspid replacement",
+    "comparator": "None (single-arm)",
+    "population": "Severe symptomatic TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "not fully extracted",
+    "enrollment": "late 2010s–ongoing",
+    "follow_up": "ongoing",
+    "trial_type": "Single-arm / early studies",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid replacement",
+    "inclusion": [],
+    "primary_endpoint": "Safety and TR reduction.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "High TR elimination in early series; broader/Western data still limited"
+    ],
+    "why_matters": "Septal-anchoring design avoids radial force on the annulus.",
+    "pearls": [
+      "LuX-Valve Plus moves to transjugular/transfemoral delivery."
+    ],
+    "limitations": [
+      "Limited Western data",
+      "NCT unconfirmed here"
+    ],
+    "guideline_acc": "Investigational.",
+    "guideline_esc": "Investigational.",
+    "fda_impact": "Not FDA-approved.",
+    "timeline": [
+      "Early series and iterations ongoing"
+    ],
+    "authors": "",
+    "journal": "",
+    "year": "",
+    "doi": "",
+    "pmid": "",
+    "caveat": "Primarily Chinese experience; Western pivotal data limited. NCT not confirmed here."
+  },
+  {
+    "acronym": "TRI-REPAIR",
+    "full_name": "TrIcuspid Regurgitation RePAIr With Cardioband Device Study",
+    "nct": "NCT02981953",
+    "category": "Tricuspid Annuloplasty",
+    "tags": [
+      "Cardioband",
+      "Direct annuloplasty",
+      "Single-arm",
+      "CE-mark"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "Direct transcatheter annuloplasty of the tricuspid annulus with Cardioband reduced annular size and TR with durable symptom improvement — a repair-based alternative to TEER and replacement.",
+    "takeaway": "Direct annuloplasty can remodel the tricuspid annulus, but the evidence base is smaller than TEER.",
+    "device": "Edwards Cardioband (tricuspid)",
+    "intervention": "Direct annuloplasty",
+    "comparator": "None (single-arm)",
+    "population": "Symptomatic functional TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "30",
+    "enrollment": "2016–2017",
+    "follow_up": "6 months, 1 year, 2 years",
+    "trial_type": "Prospective single-arm, multicenter",
+    "valve": "Tricuspid",
+    "disease": "Secondary tricuspid regurgitation",
+    "procedure": "Direct transcatheter annuloplasty",
+    "inclusion": [],
+    "primary_endpoint": "Safety and annular/TR reduction.",
+    "secondary_endpoints": [
+      "Septolateral annular diameter",
+      "TR grade",
+      "NYHA / 6-minute walk",
+      "KCCQ"
+    ],
+    "key_results": [
+      "Significant annular reduction and TR improvement",
+      "Durable functional gains through 2 years"
+    ],
+    "why_matters": "CE-mark tricuspid annuloplasty option; leaflet- and anatomy-preserving.",
+    "pearls": [
+      "Preserves future TEER/replacement options.",
+      "Right coronary artery course is a key procedural consideration."
+    ],
+    "limitations": [
+      "Small single-arm",
+      "Technically demanding"
+    ],
+    "guideline_acc": "Not routine; anatomy-selected option.",
+    "guideline_esc": "CE-mark device.",
+    "fda_impact": "Investigational in the US.",
+    "timeline": [
+      "Enrollment: 2016–2017",
+      "Published: EuroIntervention / JACC 2019–2021",
+      "CE mark obtained"
+    ],
+    "authors": "Nickenig G, et al.",
+    "journal": "EuroIntervention",
+    "year": "2019",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "SCOUT",
+    "full_name": "Percutaneous Tricuspid Valve Annuloplasty System for Symptomatic Chronic Functional TR (Trialign)",
+    "nct": "NCT02574650",
+    "category": "Tricuspid Annuloplasty",
+    "tags": [
+      "Trialign",
+      "Direct annuloplasty",
+      "Single-arm",
+      "Early feasibility"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "An early feasibility study of the Trialign system, which plicates the annulus to mimic a surgical Kay bicuspidization, showing reduced annular area and TR.",
+    "takeaway": "An early proof-of-concept for suture-based tricuspid annuloplasty.",
+    "device": "Mitralign Trialign",
+    "intervention": "Direct annuloplasty (bicuspidization)",
+    "comparator": "None (single-arm)",
+    "population": "Symptomatic chronic functional TR",
+    "risk_group": "High surgical risk",
+    "sample_size": "15 (SCOUT I)",
+    "enrollment": "2015–2016",
+    "follow_up": "30 days, 6 months",
+    "trial_type": "Prospective single-arm (early feasibility)",
+    "valve": "Tricuspid",
+    "disease": "Functional tricuspid regurgitation",
+    "procedure": "Direct transcatheter annuloplasty (bicuspidization)",
+    "inclusion": [],
+    "primary_endpoint": "Feasibility, safety, and annular/TR reduction.",
+    "secondary_endpoints": [
+      "Annular area",
+      "TR grade",
+      "6-minute walk",
+      "Quality of life"
+    ],
+    "key_results": [
+      "Reduced annular area and TR with functional improvement",
+      "Single-leaflet dehiscence observed in some patients"
+    ],
+    "why_matters": "One of the first transcatheter tricuspid annuloplasty concepts.",
+    "pearls": [
+      "Recreates a surgical Kay-type annuloplasty percutaneously."
+    ],
+    "limitations": [
+      "Very small",
+      "Durability/dehiscence concerns",
+      "Limited ongoing development"
+    ],
+    "guideline_acc": "Historical proof-of-concept.",
+    "guideline_esc": "Early data.",
+    "fda_impact": "Investigational.",
+    "timeline": [
+      "Enrollment: 2015–2016",
+      "Published: JACC 2017"
+    ],
+    "authors": "Hahn RT, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2017",
+    "doi": "",
+    "pmid": "",
+    "caveat": "Early device; limited ongoing clinical development."
+  },
+  {
+    "acronym": "TRICUS EURO",
+    "full_name": "Safety and Efficacy of the TricValve Transcatheter Bicaval Valves System (TRICUS EURO)",
+    "nct": "NCT04141137",
+    "category": "Tricuspid Heterotopic / Caval",
+    "tags": [
+      "TricValve",
+      "Bicaval / CAVI",
+      "Heterotopic",
+      "Single-arm",
+      "CE-mark"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A dedicated bicaval valve system (SVC + IVC) that treats the congestive consequences of severe TR rather than the valve itself; improved symptoms and quality of life at 6–12 months in high-risk patients — the basis for CE mark.",
+    "takeaway": "Caval valve implantation palliates congestion when the valve itself can't be repaired or replaced.",
+    "device": "P+F TricValve",
+    "intervention": "Bicaval valve implantation (CAVI)",
+    "comparator": "None (single-arm)",
+    "population": "Severe symptomatic TR, high surgical risk, significant caval backflow",
+    "risk_group": "High surgical risk",
+    "sample_size": "35 (44 pooled with first-in-human)",
+    "enrollment": "2019–2021",
+    "follow_up": "30 days, 6 months, 1 year",
+    "trial_type": "Prospective single-arm, multicenter",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "Bicaval valve implantation (CAVI)",
+    "inclusion": [],
+    "primary_endpoint": "30-day safety; 6-month quality-of-life and functional status.",
+    "secondary_endpoints": [
+      "NYHA class",
+      "KCCQ",
+      "Caval backflow",
+      "Right-heart congestion markers"
+    ],
+    "key_results": [
+      "Significant quality-of-life and functional improvement at 6–12 months",
+      "Does not reduce true tricuspid TR — treats caval backflow/congestion",
+      "Mortality aligned with baseline TRI-SCORE"
+    ],
+    "why_matters": "Offers a palliative option for patients unsuitable for TEER or orthotopic replacement.",
+    "pearls": [
+      "Treats symptoms of congestion, not the regurgitation — set expectations accordingly.",
+      "Useful when coaptation gaps or anatomy preclude TEER/replacement."
+    ],
+    "limitations": [
+      "Small single-arm",
+      "Does not correct TR",
+      "Palliative intent"
+    ],
+    "guideline_acc": "Niche palliative option.",
+    "guideline_esc": "CE mark (May 2021).",
+    "fda_impact": "Investigational in the US.",
+    "timeline": [
+      "Enrollment: 2019–2021",
+      "Published: JACC Cardiovasc Interv 2022;15:1366-1377",
+      "CE mark: May 2021"
+    ],
+    "authors": "Estévez-Loureiro R, et al.",
+    "journal": "JACC: Cardiovascular Interventions",
+    "year": "2022",
+    "doi": "10.1016/j.jcin.2022.05.022",
+    "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "HOVER",
+    "full_name": "Heterotopic Implantation of the SAPIEN Valve in the Inferior Vena Cava for Severe TR",
+    "nct": "NCT02339974",
+    "category": "Tricuspid Heterotopic / Caval",
+    "tags": [
+      "SAPIEN",
+      "IVC caval",
+      "Heterotopic",
+      "Off-label",
+      "Single-arm"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A feasibility study implanting a balloon-expandable SAPIEN valve in the inferior vena cava to palliate right-heart congestion from severe TR in inoperable patients.",
+    "takeaway": "Proof-of-concept that an off-the-shelf valve in the IVC can palliate TR-related congestion.",
+    "device": "Edwards SAPIEN (in IVC)",
+    "intervention": "Single-site caval valve implantation",
+    "comparator": "None (single-arm)",
+    "population": "Severe TR, inoperable / very high risk",
+    "risk_group": "Prohibitive surgical risk",
+    "sample_size": "15 (planned)",
+    "enrollment": "2015–2019",
+    "follow_up": "30 days, 6 months",
+    "trial_type": "Prospective single-arm feasibility",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "Single-site caval valve implantation (IVC)",
+    "inclusion": [],
+    "primary_endpoint": "30-day safety; 6-month symptom palliation.",
+    "secondary_endpoints": [
+      "NYHA class",
+      "Congestion symptoms"
+    ],
+    "key_results": [
+      "Feasible IVC implantation with symptom palliation in selected patients"
+    ],
+    "why_matters": "Early demonstration of single-site caval valve implantation.",
+    "pearls": [
+      "Palliative — addresses congestion, not the tricuspid valve."
+    ],
+    "limitations": [
+      "Very small",
+      "Off-label device use",
+      "Palliative intent"
+    ],
+    "guideline_acc": "Historical proof-of-concept.",
+    "guideline_esc": "Early data.",
+    "fda_impact": "Off-label.",
+    "timeline": [
+      "Enrollment: 2015–2019"
+    ],
+    "authors": "",
+    "journal": "",
+    "year": "",
+    "doi": "",
+    "pmid": "",
+    "caveat": "Off-label use of a commercially available valve; very small feasibility study."
+  },
+  {
+    "acronym": "TANDEM I (CroíValve)",
+    "full_name": "European Feasibility Study of the CroíValve DUO Transcatheter Tricuspid Coaptation Valve System",
+    "nct": "NCT05296148",
+    "category": "Tricuspid Frontier / Next-Gen Device",
+    "tags": [
+      "CroíValve DUO",
+      "Coaptation valve",
+      "Single-arm",
+      "Ongoing"
+    ],
+    "status": "ongoing",
+    "signal": "pending",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "An early feasibility study of a coaptation-valve system that anchors in the SVC and places a spacer at the tricuspid annulus — a hybrid concept between caval and orthotopic approaches.",
+    "takeaway": "A novel coaptation-valve concept to watch in the crowded tricuspid frontier.",
+    "device": "CroíValve DUO",
+    "intervention": "Transcatheter tricuspid coaptation valve",
+    "comparator": "None (single-arm)",
+    "population": "Severe symptomatic TR",
+    "risk_group": "High surgical risk",
+    "sample_size": "early feasibility",
+    "enrollment": "2022–ongoing",
+    "follow_up": "ongoing",
+    "trial_type": "Prospective single-arm (EFS)",
+    "valve": "Tricuspid",
+    "disease": "Tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid coaptation valve",
+    "inclusion": [],
+    "primary_endpoint": "Safety and performance.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "Pending — early feasibility ongoing"
+    ],
+    "why_matters": "Represents the diversity of next-generation tricuspid approaches.",
+    "pearls": [
+      "Combines a caval anchor with an annular coaptation element."
+    ],
+    "limitations": [
+      "Very early stage",
+      "Not yet reporting"
+    ],
+    "guideline_acc": "Pending.",
+    "guideline_esc": "Pending.",
+    "fda_impact": "Early feasibility.",
+    "timeline": [
+      "Started: 2022",
+      "Status: ongoing"
+    ],
+    "authors": "",
+    "journal": "",
+    "year": "",
+    "doi": "",
+    "pmid": "",
+    "caveat": ""
+  }
+]
