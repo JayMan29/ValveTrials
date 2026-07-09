@@ -107,6 +107,8 @@ class Trial:
     year: str = ""
     doi: str = ""
     pmid: str = ""
+    # Serial follow-ups & subanalyses: list of {"label","citation","doi","pmid"}
+    key_papers: List[dict] = field(default_factory=list)
 
     # --- Curator flag (shown as a caution ribbon when set) ---
     caveat: str = ""               # e.g. "Not a TAVR trial", "Provisional NCT"
