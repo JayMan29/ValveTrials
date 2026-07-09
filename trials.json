@@ -4803,7 +4803,7 @@
       "vs surgery",
       "Ongoing"
     ],
-    "status": "ongoing",
+    "status": "published",
     "signal": "pending",
     "practice_changing": false,
     "landmark": false,
@@ -4842,11 +4842,11 @@
       "Started: 2017",
       "Status: ongoing"
     ],
-    "authors": "",
-    "journal": "",
-    "year": "",
-    "doi": "",
-    "pmid": "",
+    "authors": "Tang GHL, Rajagopal V, Sorajja P",
+    "journal": "EuroIntervention",
+    "year": "2026",
+    "doi": "10.4244/EIJ-D-25-01133",
+    "pmid": "41251714",
     "caveat": ""
   },
   {
