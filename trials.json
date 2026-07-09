@@ -2134,8 +2134,8 @@
     "authors": "Williams MR, et al.",
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2022",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1016/j.jcin.2022.01.279",
+    "pmid": "35272777",
     "caveat": ""
   },
   {
@@ -2203,7 +2203,7 @@
     "authors": "Forrest JK, et al.",
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2021",
-    "doi": "",
+    "doi": "10.1016/j.jcin.2024.05.017",
     "pmid": "",
     "caveat": ""
   },
@@ -3394,7 +3394,7 @@
       "Published: JACC 2012 / 2014",
       "Follow-up: 2019"
     ],
-    "authors": "Whitlow PL, Feldman T, et al.",
+    "authors": "Whitlow PL, Feldman T, Pedersen WR, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2012",
     "doi": "",
@@ -3458,12 +3458,26 @@
       "Enrollment: 2017–2019",
       "Published: JACC Cardiovasc Interv 2019/2020"
     ],
-    "authors": "Lim DS, Kar S, et al.",
+    "authors": "Lim DS, Kar S, Spargias K, et al.",
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2019",
     "doi": "",
     "pmid": "",
-    "caveat": "NCT not confirmed in the source set."
+    "caveat": "NCT not confirmed in the source set.",
+    "key_papers": [
+      {
+        "label": "1-year",
+        "citation": "Lim DS, et al. JACC Cardiovasc Interv 2020;13(20):2344-2357.",
+        "doi": "",
+        "pmid": ""
+      },
+      {
+        "label": "2-year",
+        "citation": "Szerlip M, Spargias KS, Makkar R, et al. JACC Cardiovasc Interv 2021;14(14):1538-1548.",
+        "doi": "",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "CLASP IID",
@@ -3523,12 +3537,38 @@
       "Published: JACC Cardiovasc Interv 2022",
       "1-year: 2023"
     ],
-    "authors": "Lim DS, Smith RL, et al.",
+    "authors": "Lim DS, Smith RL, Gillam LD, et al.",
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2022",
-    "doi": "",
-    "pmid": "",
-    "caveat": ""
+    "doi": "10.1016/j.jcin.2022.09.005",
+    "pmid": "36121247",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "1-year",
+        "citation": "Zahr F, Smith R, Gillam L, et al. JACC Cardiovasc Interv 2023;16(23):2803-2816.",
+        "doi": "10.1016/j.jcin.2023.10.002",
+        "pmid": ""
+      },
+      {
+        "label": "2-year (trial & registry)",
+        "citation": "JACC Cardiovasc Interv 2025.",
+        "doi": "10.1016/j.jcin.2025.07.014",
+        "pmid": ""
+      },
+      {
+        "label": "Anatomically complex DMR",
+        "citation": "Hausleiter J, Lim DS, Gillam LD, et al. J Am Coll Cardiol 2023;81(5):431-442.",
+        "doi": "10.1016/j.jacc.2022.11.034",
+        "pmid": ""
+      },
+      {
+        "label": "Residual MR & gradient",
+        "citation": "Narang A, et al. JACC Cardiovasc Imaging 2026.",
+        "doi": "10.1016/j.jcmg.2026.04.005",
+        "pmid": "42233921"
+      }
+    ]
   },
   {
     "acronym": "REPAIR MR",
@@ -3962,12 +4002,20 @@
       "Enrollment: early 2010s",
       "Published: Eur J Cardiothorac Surg / registry"
     ],
-    "authors": "Colli A, et al.",
-    "journal": "European Journal of Cardio-Thoracic Surgery",
-    "year": "",
-    "doi": "",
+    "authors": "Seeburger J, Rinaldi M, Nielsen SL, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2014",
+    "doi": "10.1016/j.jacc.2013.07.090",
     "pmid": "",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "Early European experience",
+        "citation": "Colli A, et al. Eur J Cardiothorac Surg 2018;54(3):460-466.",
+        "doi": "10.1093/ejcts/ezy064",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "NeoChord Registry",
@@ -4137,8 +4185,8 @@
       "Reports: JACC / JTCVS 2018 and 2021"
     ],
     "authors": "Gammie JS, et al.",
-    "journal": "JACC / Journal of Thoracic and Cardiovascular Surgery",
-    "year": "2021",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2018",
     "doi": "",
     "pmid": "",
     "caveat": ""
@@ -4193,9 +4241,9 @@
       "Late 2010s",
       "Publication incomplete"
     ],
-    "authors": "",
-    "journal": "",
-    "year": "",
+    "authors": "Gammie JS, et al.",
+    "journal": "Circulation",
+    "year": "2016",
     "doi": "",
     "pmid": "",
     "caveat": "Mature peer-reviewed primary TRACER outcomes incompletely retrieved."
@@ -4315,8 +4363,8 @@
     "authors": "Muller DWM, Farivar RS, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2017",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1016/j.jacc.2016.10.068",
+    "pmid": "28040318",
     "caveat": ""
   },
   {
@@ -4378,8 +4426,8 @@
     "authors": "Sorajja P, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2021",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1016/j.jacc.2021.08.060",
+    "pmid": "34736561",
     "caveat": ""
   },
   {
@@ -4498,10 +4546,10 @@
       "Enrollment: mid-2010s",
       "Published: JACC 2018"
     ],
-    "authors": "Bapat V, et al.",
+    "authors": "Bapat V, Rajagopal V, Meduri C, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2018",
-    "doi": "",
+    "doi": "10.1016/j.jacc.2017.10.061",
     "pmid": "",
     "caveat": ""
   },
@@ -4622,7 +4670,7 @@
     "authors": "Zahr F, et al.",
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2022",
-    "doi": "",
+    "doi": "10.1016/j.jcin.2021.10.018",
     "pmid": "",
     "caveat": "NCT not separately identified in the source set."
   },
@@ -5329,9 +5377,9 @@
       "Published: JACC 2018 and 2021 (arm papers)"
     ],
     "authors": "Guerrero M, et al.",
-    "journal": "Journal of the American College of Cardiology",
-    "year": "2018",
-    "doi": "",
+    "journal": "JACC: Cardiovascular Interventions",
+    "year": "2021",
+    "doi": "10.1016/j.jcin.2021.01.051",
     "pmid": "",
     "caveat": ""
   },
@@ -5394,8 +5442,8 @@
     "authors": "",
     "journal": "Circulation",
     "year": "2024",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1161/CIRCINTERVENTIONS.123.013782",
+    "pmid": "39034924",
     "caveat": ""
   },
   {
@@ -5447,8 +5495,8 @@
     "timeline": [
       "Published: JACC Cardiovasc Interv 2020"
     ],
-    "authors": "Whisenant B, et al.",
-    "journal": "JACC: Cardiovascular Interventions",
+    "authors": "Whisenant B, Kapadia SR, Eleid MF, et al.",
+    "journal": "JAMA Cardiology",
     "year": "2020",
     "doi": "",
     "pmid": "",
@@ -5570,8 +5618,8 @@
     "authors": "Khan JM, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2019",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1016/j.jacc.2019.02.076",
+    "pmid": "31118146",
     "caveat": ""
   }
 ]
