@@ -5816,6 +5816,14 @@
     "year": "2019",
     "doi": "10.1016/j.jacc.2019.02.076",
     "pmid": "31118146",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+  {
+    "label": "5-Year Outcomes",
+    "citation": "Khan JM, et al. JACC Cardiovasc Interv. 2024;17(18):2157-2167.",
+    "doi": "10.1016/j.jcin.2024.05.041",
+    "pmid": "39243268"
+    }
+]
   }
 ]
