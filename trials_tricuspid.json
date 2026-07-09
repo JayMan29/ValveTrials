@@ -529,7 +529,21 @@
     "year": "2023",
     "doi": "10.1016/j.jcin.2022.01.016",
     "pmid": "",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "First-in-human",
+        "citation": "Fam NP, von Bardeleben RS, Hensey M, et al. JACC Cardiovasc Interv 2021;14(5):501-511.",
+        "doi": "10.1016/j.jcin.2020.11.045",
+        "pmid": ""
+      },
+      {
+        "label": "1-year",
+        "citation": "Kodali S, Hahn RT, Makkar R, et al. Eur Heart J 2023;44(46):4862-4873.",
+        "doi": "10.1093/eurheartj/ehad667",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "TRISCEND II",
@@ -595,12 +609,32 @@
       "Published: NEJM 2025",
       "FDA approval: Feb 2024"
     ],
-    "authors": "Hahn RT, Makkar R, Kodali S, et al.",
+    "authors": "Hahn RT, Makkar R, Thourani VH, et al.",
     "journal": "New England Journal of Medicine",
     "year": "2025",
-    "doi": "",
+    "doi": "10.1056/NEJMoa2401918",
     "pmid": "",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "Quality of life (1-year)",
+        "citation": "Arnold SV, et al. J Am Coll Cardiol 2025;85(3):206-216.",
+        "doi": "10.1016/j.jacc.2024.10.067",
+        "pmid": ""
+      },
+      {
+        "label": "Outcomes by baseline TR severity",
+        "citation": "Lurz P, Hahn RT, Kodali S, et al. Eur Heart J 2025.",
+        "doi": "10.1093/eurheartj/ehaf676",
+        "pmid": ""
+      },
+      {
+        "label": "Trial design",
+        "citation": "Grayburn PA, Kodali SK, Hahn RT, et al. Am J Cardiol 2024.",
+        "doi": "",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "LuX-Valve",
@@ -717,12 +751,38 @@
       "Published: EuroIntervention / JACC 2019–2021",
       "CE mark obtained"
     ],
-    "authors": "Nickenig G, et al.",
-    "journal": "EuroIntervention",
+    "authors": "Nickenig G, Weber M, Schueler R, et al.",
+    "journal": "Journal of the American College of Cardiology",
     "year": "2019",
-    "doi": "",
+    "doi": "10.1016/j.jacc.2019.01.062",
     "pmid": "",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "2-year",
+        "citation": "Nickenig G, et al. EuroIntervention 2021;16(15):e1264-e1271.",
+        "doi": "",
+        "pmid": ""
+      },
+      {
+        "label": "Cardioband TR EFS (US) — 30-day",
+        "citation": "Davidson CJ, et al. JACC Cardiovasc Interv 2021;14(1):41-50.",
+        "doi": "10.1016/j.jcin.2020.10.017",
+        "pmid": ""
+      },
+      {
+        "label": "Cardioband TR EFS (US) — 1-year",
+        "citation": "JACC Cardiovasc Interv 2022;15(14).",
+        "doi": "10.1016/j.jcin.2022.07.006",
+        "pmid": ""
+      },
+      {
+        "label": "TriBAND (post-market) — 30-day",
+        "citation": "Nickenig G, et al. EuroIntervention 2021;17(10):809-817.",
+        "doi": "",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "SCOUT",
@@ -782,11 +842,11 @@
       "Enrollment: 2015–2016",
       "Published: JACC 2017"
     ],
-    "authors": "Hahn RT, et al.",
+    "authors": "Hahn RT, Meduri CU, Davidson CJ, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2017",
-    "doi": "",
-    "pmid": "",
+    "doi": "10.1016/j.jacc.2017.01.054",
+    "pmid": "28385308",
     "caveat": "Early device; limited ongoing clinical development."
   },
   {
@@ -1198,5 +1258,75 @@
       }
     ],
     "caveat": ""
+  },
+  {
+    "acronym": "TVT Registry — TTVR",
+    "full_name": "Real-World Outcomes of Transcatheter Tricuspid Valve Replacement: Analysis From the STS/ACC TVT Registry",
+    "nct": "",
+    "category": "Tricuspid Transcatheter Replacement (TTVR)",
+    "tags": [
+      "EVOQUE",
+      "TTVR",
+      "Registry",
+      "Real-world",
+      "STS/ACC TVT"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 3,
+    "quick_summary": "The first US real-world report of commercial EVOQUE tricuspid replacement — 1,034 consecutive patients in the first year after FDA approval — showing near-complete TR elimination and rapid health-status improvement, with 30-day outcomes consistent with (and pacemaker/bleeding rates lower than) the TRISCEND II trial.",
+    "takeaway": "Real-world confirmation that TTVR translates from trial to routine US practice — with lower-than-trial pacemaker and bleeding rates.",
+    "device": "Edwards EVOQUE",
+    "intervention": "Transcatheter tricuspid replacement (commercial)",
+    "comparator": "None (registry)",
+    "population": "Severe symptomatic TR undergoing commercial TTVR",
+    "risk_group": "Older, medically complex (mean age 77; 69% female)",
+    "sample_size": "1,034 (82 US centers)",
+    "enrollment": "Feb 2024–Mar 2025",
+    "follow_up": "30 days",
+    "trial_type": "Retrospective real-world registry",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid replacement",
+    "inclusion": [],
+    "primary_endpoint": "30-day clinical, echocardiographic, and health-status (KCCQ) outcomes.",
+    "secondary_endpoints": [
+      "TR reduction to ≤mild",
+      "New pacemaker implantation",
+      "Bleeding",
+      "Procedural success"
+    ],
+    "key_results": [
+      "High procedural success with near-complete TR elimination",
+      "Rapid, significant KCCQ health-status improvement at 30 days",
+      "New-pacemaker and bleeding rates lower than in the randomized trials",
+      "30-day outcomes consistent with TRISCEND II"
+    ],
+    "why_matters": "First large-scale real-world validation of EVOQUE after US approval; supports generalizability of the pivotal-trial findings.",
+    "pearls": [
+      "Real-world pacemaker/bleeding rates ran below the trial — reassuring as adoption widens.",
+      "Only 30-day data so far; durability and 1-year outcomes are the next question."
+    ],
+    "limitations": [
+      "Retrospective, no comparator",
+      "30-day follow-up only",
+      "Early adopter centers"
+    ],
+    "guideline_acc": "Post-approval real-world evidence supporting the TTVR indication.",
+    "guideline_esc": "Generalizability data.",
+    "fda_impact": "Real-world experience following EVOQUE FDA approval (Feb 2024).",
+    "timeline": [
+      "Enrollment: Feb 2024–Mar 2025",
+      "Published: JAMA 2026 (online Apr 13, 2026)"
+    ],
+    "authors": "Makkar RR, Gupta A, O'Neill BP, et al.",
+    "journal": "JAMA",
+    "year": "2026",
+    "doi": "10.1001/jama.2026.3446",
+    "pmid": "41973411",
+    "key_papers": [],
+    "caveat": "Post-approval real-world registry (30-day outcomes); retrospective, no comparator."
   }
 ]
