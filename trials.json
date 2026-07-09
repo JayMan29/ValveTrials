@@ -4539,6 +4539,26 @@
     "doi": "10.1016/j.jacc.2021.08.060",
     "pmid": "34736561",
     "caveat": ""
+    "key_papers": [
+  {
+    "label": "Primary expanded clinical study",
+    "citation": "Sorajja P, et al. J Am Coll Cardiol. 2021.",
+    "doi": "10.1016/j.jacc.2021.08.060",
+    "pmid": "34736561"
+  },
+  {
+    "label": "Clinical outcomes and predictors",
+    "citation": "Conradi L, Ludwig S, Sorajja P, et al. Clinical outcomes and predictors of transapical transcatheter mitral valve replacement: the Tendyne Expanded Clinical Study. EuroIntervention. 2024;20(14):e887-e897.",
+    "doi": "10.4244/EIJ-D-23-00904",
+    "pmid": ""
+  },
+  {
+    "label": "Five-year outcomes",
+    "citation": "Muller DW, Duncan A, Sorajja P, et al. Five-Year Outcomes of Transcatheter Mitral Valve Replacement in Patients With Severe Symptomatic Mitral Regurgitation: Results From the Tendyne Expanded Clinical Study. ESC Heart Failure. 2026.",
+    "doi": "10.1093/eschf/xvag175",
+    "pmid": ""
+  }
+]
   },
   {
     "acronym": "SUMMIT",
