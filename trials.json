@@ -5033,66 +5033,79 @@
     "caveat": ""
   },
   {
-    "acronym": "HighLife TSMVR",
-    "full_name": "HighLife Transseptal Mitral Valve Replacement Feasibility Study",
-    "nct": "NCT04029337",
-    "category": "Transcatheter Mitral Replacement (TMVR)",
-    "tags": [
-      "HighLife",
-      "Transseptal",
-      "Single-arm",
-      "Feasibility"
-    ],
-    "status": "published",
-    "signal": "descriptive",
-    "practice_changing": false,
-    "landmark": false,
-    "evidence_stars": 0,
-    "quick_summary": "A transseptal, docking-ring-based TMVR concept; feasibility showed 90% implant success with 83% device success at 30 days, illustrating both the promise and complexity of multicomponent systems.",
-    "takeaway": "HighLife showed the promise and current complexity of multicomponent transseptal TMVR.",
-    "device": "HighLife TSMVR (two-component ring + valve)",
-    "intervention": "Transseptal TMVR",
-    "comparator": "None (single-arm)",
-    "population": "Symptomatic MR, high surgical risk",
-    "risk_group": "High risk",
-    "sample_size": "30",
-    "enrollment": "early 2020s",
-    "follow_up": "30 days",
-    "trial_type": "Prospective single-arm",
-    "valve": "Mitral",
-    "disease": "Mitral regurgitation",
-    "procedure": "Transseptal TMVR (docking ring)",
-    "inclusion": [],
-    "primary_endpoint": "Feasibility, safety, and performance.",
-    "secondary_endpoints": [
-      "Implant / device success",
-      "MR reduction",
-      "Gradient"
-    ],
-    "key_results": [
-      "Implant success 90%; device success at 30 days 83%"
-    ],
-    "why_matters": "Important transseptal / docking-based TMVR concept.",
-    "pearls": [
-      "Two-component (sub-annular ring + valve) design targets secure anchoring."
-    ],
-    "limitations": [
-      "Small single-arm",
-      "Multicomponent complexity"
-    ],
-    "guideline_acc": "Feasibility evidence.",
-    "guideline_esc": "Early data.",
-    "fda_impact": "Investigational.",
-    "timeline": [
-      "Published: JACC Cardiovasc Interv 2023"
-    ],
-    "authors": "",
-    "journal": "JACC: Cardiovascular Interventions",
-    "year": "2023",
-    "doi": "",
-    "pmid": "",
-    "caveat": ""
-  },
+  "acronym": "HighLife TSMVR",
+  "full_name": "HighLife Transseptal Mitral Valve Replacement Feasibility Study",
+  "nct": "NCT04029337",
+  "category": "Transcatheter Mitral Replacement (TMVR)",
+  "tags": [
+    "HighLife",
+    "Transseptal",
+    "Single-arm",
+    "Feasibility"
+  ],
+  "status": "published",
+  "signal": "descriptive",
+  "practice_changing": false,
+  "landmark": false,
+  "evidence_stars": 0,
+  "quick_summary": "A transseptal, docking-ring-based TMVR concept; feasibility showed 90% implant success with 83% device success at 30 days, illustrating both the promise and complexity of multicomponent systems.",
+  "takeaway": "HighLife demonstrated the feasibility of a transseptal docking-ring TMVR system while highlighting the procedural complexity of multicomponent devices.",
+  "device": "HighLife TSMVR (two-component ring + valve)",
+  "intervention": "Transseptal TMVR",
+  "comparator": "None (single-arm)",
+  "population": "Symptomatic mitral regurgitation at high surgical risk",
+  "risk_group": "High risk",
+  "sample_size": "30",
+  "enrollment": "Early 2020s",
+  "follow_up": "30 days",
+  "trial_type": "Prospective single-arm",
+  "valve": "Mitral",
+  "disease": "Mitral regurgitation",
+  "procedure": "Transseptal TMVR (docking ring)",
+  "inclusion": [],
+  "primary_endpoint": "Feasibility, safety, and device performance.",
+  "secondary_endpoints": [
+    "Implant success",
+    "Device success",
+    "MR reduction",
+    "Transmitral gradient"
+  ],
+  "key_results": [
+    "Implant success 90%",
+    "30-day device success 83%",
+    "Demonstrated feasibility of a fully transseptal docking-ring TMVR system"
+  ],
+  "why_matters": "One of the earliest successful transseptal dedicated TMVR platforms using a subannular docking ring for secure anchoring.",
+  "pearls": [
+    "Two-component (subannular ring + valve) design provides dedicated anchoring independent of annular calcification.",
+    "Demonstrated feasibility of fully transseptal TMVR without transapical access."
+  ],
+  "limitations": [
+    "Small single-arm feasibility study",
+    "Early experience with a technically complex multicomponent system"
+  ],
+  "guideline_acc": "Feasibility evidence.",
+  "guideline_esc": "Early feasibility data.",
+  "fda_impact": "Investigational.",
+  "timeline": [
+    "Published: JACC Cardiovascular Interventions 2023",
+    "2-year follow-up published: 2026"
+  ],
+  "authors": "",
+  "journal": "JACC: Cardiovascular Interventions",
+  "year": "2023",
+  "doi": "10.1016/j.jcin.2023.09.003",
+  "pmid": "",
+  "caveat": "",
+  "key_papers": [
+    {
+      "label": "2-year outcomes",
+      "citation": "HighLife Transseptal Mitral Valve Replacement Feasibility Study: 2-Year Outcomes. JACC Cardiovasc Interv. 2026.",
+      "doi": "10.1016/j.jcin.2026.01.294",
+      "pmid": ""
+    }
+  ]
+},
   {
     "acronym": "Tiara EFS",
     "full_name": "Neovasc Tiara Transapical TMVR Early Feasibility Study",
