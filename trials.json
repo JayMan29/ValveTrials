@@ -4551,7 +4551,7 @@
       "vs TEER",
       "MAC cohort"
     ],
-    "status": "ongoing",
+    "status": "published",
     "signal": "pending",
     "practice_changing": false,
     "landmark": false,
@@ -4593,11 +4593,11 @@
       "Tendyne FDA approval: 2025",
       "Status: ongoing/partially reported"
     ],
-    "authors": "",
-    "journal": "",
-    "year": "",
-    "doi": "",
-    "pmid": "",
+    "authors": "Sorajja P, Thourani VH, Rogers JH",
+    "journal": "JACC",
+    "year": "2026",
+    "doi": "10.1016/j.jacc.2025.10.025",
+    "pmid": "41194751",
     "caveat": "Randomized (vs TEER) results nuanced; the MAC single-arm cohort supported FDA approval."
   },
   {
