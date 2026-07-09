@@ -62,9 +62,29 @@
     "authors": "Nickenig G, et al.",
     "journal": "The Lancet",
     "year": "2019",
-    "doi": "",
-    "pmid": "",
-    "caveat": ""
+    "doi": "10.1016/S0140-6736(19)32600-5",
+    "pmid": "31708188",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "1-year",
+        "citation": "Lurz P, et al. J Am Coll Cardiol 2021;77(3):229-239.",
+        "doi": "10.1016/j.jacc.2020.11.038",
+        "pmid": "33478646"
+      },
+      {
+        "label": "2-year",
+        "citation": "von Bardeleben RS, et al. Circ Cardiovasc Interv 2023;16(8):e012888.",
+        "doi": "10.1161/CIRCINTERVENTIONS.122.012888",
+        "pmid": "37582170"
+      },
+      {
+        "label": "3-year",
+        "citation": "Nickenig G, et al. JACC Cardiovasc Interv 2024;17(18):2113-2122.",
+        "doi": "10.1016/j.jcin.2024.05.036",
+        "pmid": "39243264"
+      }
+    ]
   },
   {
     "acronym": "TRILUMINATE Pivotal",
@@ -135,7 +155,45 @@
     "year": "2023",
     "doi": "10.1056/NEJMoa2300525",
     "pmid": "36876753",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "1-year (randomized cohort)",
+        "citation": "Tang GHL, et al. J Am Coll Cardiol 2025;85(3):235-246.",
+        "doi": "10.1016/j.jacc.2024.10.086",
+        "pmid": "39471883"
+      },
+      {
+        "label": "2-year",
+        "citation": "Kar S, et al. Circulation 2025;151(23):1630-1638.",
+        "doi": "10.1161/CIRCULATIONAHA.125.074536",
+        "pmid": "40159089"
+      },
+      {
+        "label": "Quality of life (KCCQ)",
+        "citation": "Arnold SV, et al. J Am Coll Cardiol 2024;83(1):1-13.",
+        "doi": "10.1016/j.jacc.2023.10.008",
+        "pmid": "37898329"
+      },
+      {
+        "label": "Imaging / cardiac remodeling substudy",
+        "citation": "Cavalcante JL, et al. J Am Coll Cardiol 2025;85(3):250-261.",
+        "doi": "10.1016/j.jacc.2024.09.009",
+        "pmid": "39570246"
+      },
+      {
+        "label": "Renal & liver function",
+        "citation": "Jorde UP, et al. J Am Coll Cardiol 2024;84(25):2446-2456.",
+        "doi": "10.1016/j.jacc.2024.08.044",
+        "pmid": "39222896"
+      },
+      {
+        "label": "Transvalvular CIED leads",
+        "citation": "Naik H, et al. JACC Clin Electrophysiol 2025;11(5):1012-1020.",
+        "doi": "10.1016/j.jacep.2025.01.001",
+        "pmid": "39903153"
+      }
+    ]
   },
   {
     "acronym": "TRI-FR",
@@ -197,12 +255,20 @@
       "Enrollment: 2021–2023",
       "Presented: ESC 2024"
     ],
-    "authors": "Donal E, et al.",
-    "journal": "ESC 2024 (peer-reviewed publication)",
-    "year": "2024",
-    "doi": "",
-    "pmid": "",
-    "caveat": ""
+    "authors": "Donal E, Dreyfus J, Leurent G, et al.",
+    "journal": "JAMA",
+    "year": "2025",
+    "doi": "10.1001/jama.2024.21189",
+    "pmid": "39602173",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "Echocardiographic outcomes",
+        "citation": "Donal E, et al. JACC Cardiovasc Imaging 2025.",
+        "doi": "10.1016/j.jcmg.2025.09.010",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "bRIGHT",
@@ -263,8 +329,16 @@
     "journal": "Journal of the American College of Cardiology",
     "year": "2024",
     "doi": "10.1016/j.jacc.2024.05.006",
-    "pmid": "",
-    "caveat": "Post-market registry (not a dedicated NCT here)."
+    "pmid": "38759905",
+    "caveat": "Post-market registry (not a dedicated NCT here).",
+    "key_papers": [
+      {
+        "label": "30-day",
+        "citation": "Lurz P, et al. J Am Coll Cardiol 2023;82(4):281-291.",
+        "doi": "10.1016/j.jacc.2023.05.008",
+        "pmid": "37207923"
+      }
+    ]
   },
   {
     "acronym": "CLASP TR EFS",
@@ -321,17 +395,25 @@
       "Enrollment: 2019–2021",
       "Published: JACC 2021 / JACC Cardiovasc Interv"
     ],
-    "authors": "Kodali S, Hahn RT, et al.",
+    "authors": "Kodali SK, Hahn RT, Davidson CJ, et al.",
     "journal": "Journal of the American College of Cardiology",
-    "year": "2021",
-    "doi": "",
-    "pmid": "",
-    "caveat": ""
+    "year": "2023",
+    "doi": "10.1016/j.jacc.2023.02.049",
+    "pmid": "37137586",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "30-day",
+        "citation": "Kodali S, et al. J Am Coll Cardiol 2021;77(4):345-356.",
+        "doi": "10.1016/j.jacc.2020.11.047",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "CLASP II TR",
     "full_name": "Edwards PASCAL Tricuspid Repair System Pivotal Trial",
-    "nct": "",
+    "nct": "NCT04097145",
     "category": "Tricuspid TEER",
     "tags": [
       "PASCAL",
@@ -383,7 +465,7 @@
     "year": "",
     "doi": "",
     "pmid": "",
-    "caveat": "NCT not confirmed here."
+    "caveat": ""
   },
   {
     "acronym": "TRISCEND",
@@ -445,7 +527,7 @@
     "authors": "Kodali S, Hahn RT, et al.",
     "journal": "Journal of the American College of Cardiology",
     "year": "2023",
-    "doi": "",
+    "doi": "10.1016/j.jcin.2022.01.016",
     "pmid": "",
     "caveat": ""
   },
@@ -894,6 +976,227 @@
     "year": "",
     "doi": "",
     "pmid": "",
+    "caveat": ""
+  },
+  {
+    "acronym": "MitraClip in TR (early)",
+    "full_name": "Transcatheter Treatment of Severe Tricuspid Regurgitation With the Edge-to-Edge MitraClip Technique",
+    "nct": "",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "MitraClip",
+      "TEER",
+      "Off-label",
+      "Foundational"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": true,
+    "evidence_stars": 3,
+    "quick_summary": "The foundational multicenter experience showing that edge-to-edge repair with the MitraClip could be applied to the tricuspid valve, reducing TR and improving symptoms and opening the T-TEER field.",
+    "takeaway": "The proof-of-concept that launched tricuspid TEER, using the mitral clip off-label.",
+    "device": "Abbott MitraClip (off-label)",
+    "intervention": "TEER",
+    "comparator": "None (observational)",
+    "population": "Severe symptomatic TR, high surgical risk",
+    "risk_group": "High surgical risk",
+    "sample_size": "64",
+    "enrollment": "2015–2016",
+    "follow_up": "30 days",
+    "trial_type": "Multicenter observational",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "TEER (off-label MitraClip)",
+    "inclusion": [],
+    "primary_endpoint": "Feasibility, procedural success, and TR reduction.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "Procedural success with significant acute TR reduction",
+      "Symptomatic improvement; established feasibility of the edge-to-edge concept in the tricuspid position"
+    ],
+    "why_matters": "Opened the dedicated T-TEER field (TRILUMINATE, CLASP TR) that followed.",
+    "pearls": [
+      "Repurposing the mitral clip proved the anatomy was tractable before dedicated devices existed."
+    ],
+    "limitations": [
+      "Off-label device",
+      "Observational, no comparator",
+      "Early-generation hardware"
+    ],
+    "guideline_acc": "Historical proof-of-concept.",
+    "guideline_esc": "Foundational feasibility.",
+    "fda_impact": "Off-label; predates dedicated tricuspid device approvals.",
+    "timeline": [
+      "Published: Circulation 2017"
+    ],
+    "authors": "Nickenig G, Kowalski M, Hausleiter J, et al.",
+    "journal": "Circulation",
+    "year": "2017",
+    "doi": "10.1161/CIRCULATIONAHA.116.024848",
+    "pmid": "28336788",
+    "key_papers": [
+      {
+        "label": "Predictors of outcome",
+        "citation": "Besler C, et al. JACC Cardiovasc Interv 2018;11(12):1119-1128.",
+        "doi": "10.1016/j.jcin.2018.05.002",
+        "pmid": "29929631"
+      },
+      {
+        "label": "HF hospitalization reduction",
+        "citation": "Orban M, et al. JACC Heart Fail 2020;8(4):265-276.",
+        "doi": "10.1016/j.jchf.2019.12.006",
+        "pmid": "32241534"
+      }
+    ],
+    "caveat": "Off-label early experience with the mitral device, before dedicated tricuspid systems."
+  },
+  {
+    "acronym": "TriValve Registry",
+    "full_name": "International Multisite Transcatheter Tricuspid Valve Therapies (TriValve) Registry",
+    "nct": "",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "TriValve",
+      "Registry",
+      "Multi-device",
+      "vs medical therapy"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": true,
+    "evidence_stars": 3,
+    "quick_summary": "The landmark international registry of transcatheter tricuspid therapies; its propensity-matched comparison suggested a survival and heart-failure benefit of intervention over medical therapy, and its edge-to-edge subset defined early real-world TEER outcomes.",
+    "takeaway": "The registry that first suggested a survival signal for transcatheter TR therapy — later tempered by randomized data.",
+    "device": "Multiple (MitraClip/PASCAL TEER, Cardioband, others)",
+    "intervention": "Transcatheter tricuspid intervention",
+    "comparator": "Medical therapy (propensity-matched)",
+    "population": "Severe symptomatic TR",
+    "risk_group": "High surgical risk",
+    "sample_size": "472 vs 1,179 (matched)",
+    "enrollment": "2016–2018",
+    "follow_up": "1–2 years",
+    "trial_type": "International registry / propensity-matched",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "Transcatheter tricuspid intervention (multi-device)",
+    "inclusion": [],
+    "primary_endpoint": "Survival and heart-failure rehospitalization vs medical therapy.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "Transcatheter intervention associated with improved survival and fewer HF hospitalizations vs matched medical therapy",
+      "Edge-to-edge subset: 1-year TR ≤2+ in ~72%, NYHA ≤II in ~69%"
+    ],
+    "why_matters": "Framed the rationale for randomized T-TEER trials; benefit later only partly confirmed by TRILUMINATE Pivotal.",
+    "pearls": [
+      "Registry survival signal exceeded what the randomized trials later showed — selection bias matters."
+    ],
+    "limitations": [
+      "Non-randomized",
+      "Propensity-matched",
+      "Device-heterogeneous"
+    ],
+    "guideline_acc": "Hypothesis-generating.",
+    "guideline_esc": "Informed trial design.",
+    "fda_impact": "Registry evidence, not a regulatory dataset.",
+    "timeline": [
+      "Which patients: JACC Cardiovasc Interv 2017",
+      "vs medical therapy: JACC 2019"
+    ],
+    "authors": "Taramasso M, Benfari G, van der Bijl P, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2019",
+    "doi": "10.1016/j.jacc.2019.09.028",
+    "pmid": "31568868",
+    "key_papers": [
+      {
+        "label": "Which patients are treated",
+        "citation": "Taramasso M, et al. JACC Cardiovasc Interv 2017;10(19):1982-1990.",
+        "doi": "10.1016/j.jcin.2017.08.011",
+        "pmid": "28982563"
+      },
+      {
+        "label": "Mid-term (all devices)",
+        "citation": "Taramasso M, et al. JACC Cardiovasc Interv 2019;12(2):155-165.",
+        "doi": "10.1016/j.jcin.2018.10.022",
+        "pmid": ""
+      },
+      {
+        "label": "1-year edge-to-edge (TEER)",
+        "citation": "Mehr M, et al. JACC Cardiovasc Interv 2019;12(15):1451-1461.",
+        "doi": "10.1016/j.jcin.2019.04.019",
+        "pmid": "31395215"
+      }
+    ],
+    "caveat": "Multi-device registry (TEER plus other devices); propensity-matched, not randomized."
+  },
+  {
+    "acronym": "EuroTR Registry",
+    "full_name": "European Real-World Registry of Transcatheter Leaflet Repair for Tricuspid Regurgitation (EuroTR)",
+    "nct": "",
+    "category": "Tricuspid TEER",
+    "tags": [
+      "EuroTR",
+      "TEER",
+      "Registry",
+      "Real-world",
+      "MitraClip + PASCAL"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 3,
+    "quick_summary": "A large European real-world registry of tricuspid leaflet-repair (TEER) with both MitraClip and PASCAL, confirming durable TR reduction and symptom benefit across routine practice, and identifying residual TR as a key prognostic marker.",
+    "takeaway": "The biggest real-world European T-TEER dataset — generalizes the trial findings across both devices.",
+    "device": "MitraClip and PASCAL",
+    "intervention": "TEER (leaflet repair)",
+    "comparator": "Registry",
+    "population": "Severe symptomatic TR in routine practice",
+    "risk_group": "Mixed / high risk",
+    "sample_size": "large multicenter cohort",
+    "enrollment": "2016–2023",
+    "follow_up": "30 days, 1 year",
+    "trial_type": "Prospective multicenter registry",
+    "valve": "Tricuspid",
+    "disease": "Severe tricuspid regurgitation",
+    "procedure": "TEER (leaflet repair)",
+    "inclusion": [],
+    "primary_endpoint": "Real-world procedural success, TR reduction, and 1-year outcomes.",
+    "secondary_endpoints": [],
+    "key_results": [
+      "Durable TR reduction and symptom improvement across both devices",
+      "Residual TR severity independently associated with 1-year outcome"
+    ],
+    "why_matters": "Cross-device generalizability for T-TEER outside the pivotal trials.",
+    "pearls": [
+      "Includes both leaflet-repair platforms, unlike the device-specific pivotal trials."
+    ],
+    "limitations": [
+      "Non-randomized registry",
+      "Device-heterogeneous"
+    ],
+    "guideline_acc": "Supportive real-world evidence.",
+    "guideline_esc": "Generalizability data.",
+    "fda_impact": "Real-world (European) evidence.",
+    "timeline": [
+      "30-day: JACC Cardiovasc Interv 2022",
+      "1-year: JACC 2025"
+    ],
+    "authors": "Wild MG, Stolz L, Rosch S, et al.",
+    "journal": "Journal of the American College of Cardiology",
+    "year": "2025",
+    "doi": "10.1016/j.jacc.2024.10.068",
+    "pmid": "39466215",
+    "key_papers": [
+      {
+        "label": "30-day / early experience",
+        "citation": "Wild MG, et al. JACC Cardiovasc Interv 2022;15(13):1352-1363.",
+        "doi": "10.1016/j.jcin.2022.05.041",
+        "pmid": "35798479"
+      }
+    ],
     "caveat": ""
   }
 ]
