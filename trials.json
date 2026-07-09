@@ -5753,7 +5753,15 @@
     "year": "",
     "doi": "",
     "pmid": "",
-    "caveat": ""
+    "caveat": "",
+    "key_papers": [
+  {
+    "label": "MAC Score Comparison: 3D-TEE vs CT",
+    "citation": "Quelal Analuisa K, et al. JACC Advances. 2025.",
+    "doi": "10.1016/j.jacadv.2025.102427",
+    "pmid": "41411992"
+  }
+    ]
   },
   {
     "acronym": "LAMPOON IDE",
