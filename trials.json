@@ -5394,61 +5394,84 @@
     "caveat": ""
   },
   {
-    "acronym": "EVOQUE Eos MISCEND",
-    "full_name": "Edwards EVOQUE Eos Mitral Valve Replacement (MISCEND Study)",
-    "nct": "NCT02718001",
-    "category": "Transcatheter Mitral Replacement (TMVR)",
-    "tags": [
-      "EVOQUE Eos",
-      "CardiAQ lineage",
-      "Single-arm"
-    ],
-    "status": "ongoing",
-    "signal": "descriptive",
-    "practice_changing": false,
-    "landmark": false,
-    "evidence_stars": 0,
-    "quick_summary": "An active Edwards mitral TMVR program (EVOQUE/CardiAQ lineage) evaluating safety and performance across degenerative and functional MR; mature full-cohort efficacy data remain limited.",
-    "takeaway": "Important to know it exists, but mature published efficacy data remain limited.",
-    "device": "Edwards EVOQUE Eos",
-    "intervention": "Transcatheter mitral replacement",
-    "comparator": "None (single-arm)",
-    "population": "Degenerative or functional MR",
-    "risk_group": "High risk",
-    "sample_size": "~123 (estimated)",
-    "enrollment": "2015–ongoing",
-    "follow_up": "ongoing",
-    "trial_type": "Prospective single-arm",
-    "valve": "Mitral",
-    "disease": "Degenerative or functional MR",
-    "procedure": "Transcatheter mitral replacement",
-    "inclusion": [],
-    "primary_endpoint": "Safety and performance.",
-    "secondary_endpoints": [],
-    "key_results": [
-      "Active program; mature full-cohort mitral outcomes incompletely extracted"
-    ],
-    "why_matters": "Edge Edwards TMVR program (distinct from the tricuspid EVOQUE indication).",
-    "pearls": [
-      "Note: EVOQUE is FDA-approved for tricuspid TR; the mitral program is separate."
-    ],
-    "limitations": [
-      "Limited mature mitral publication"
-    ],
-    "guideline_acc": "Limited.",
-    "guideline_esc": "Limited.",
-    "fda_impact": "Mitral program investigational.",
-    "timeline": [
-      "Enrollment: 2015–ongoing",
-      "Early report: JACC Cardiovasc Interv 2020"
-    ],
-    "authors": "",
-    "journal": "JACC: Cardiovascular Interventions",
-    "year": "2020",
-    "doi": "",
-    "pmid": "",
-    "caveat": "Mature full-cohort mitral outcomes incompletely retrieved."
-  },
+  "acronym": "EVOQUE Eos MISCEND",
+  "full_name": "Edwards EVOQUE Eos Mitral Valve Replacement (MISCEND Study)",
+  "nct": "NCT02718001",
+  "category": "Transcatheter Mitral Replacement (TMVR)",
+  "tags": [
+    "EVOQUE Eos",
+    "CardiAQ lineage",
+    "Single-arm"
+  ],
+  "status": "ongoing",
+  "signal": "descriptive",
+  "practice_changing": false,
+  "landmark": false,
+  "evidence_stars": 0,
+  "quick_summary": "An active Edwards mitral TMVR program (EVOQUE/CardiAQ lineage) evaluating safety and performance across degenerative and functional MR; early feasibility demonstrated promising procedural success with sustained improvement through 1 year.",
+  "takeaway": "The EVOQUE/CardiAQ platform demonstrated encouraging early and 1-year outcomes and remains one of the leading dedicated transseptal TMVR programs.",
+  "device": "Edwards EVOQUE Eos",
+  "intervention": "Transcatheter mitral replacement",
+  "comparator": "None (single-arm)",
+  "population": "Degenerative or functional mitral regurgitation",
+  "risk_group": "High risk",
+  "sample_size": "~123",
+  "enrollment": "2015–ongoing",
+  "follow_up": "Ongoing",
+  "trial_type": "Prospective single-arm",
+  "valve": "Mitral",
+  "disease": "Degenerative or functional mitral regurgitation",
+  "procedure": "Transcatheter mitral replacement",
+  "inclusion": [],
+  "primary_endpoint": "Safety and device performance.",
+  "secondary_endpoints": [
+    "Technical success",
+    "MR reduction",
+    "Functional improvement",
+    "Mortality"
+  ],
+  "key_results": [
+    "Early feasibility demonstrated high technical success with effective MR elimination",
+    "Clinical improvement and valve performance remained favorable through 1 year"
+  ],
+  "why_matters": "One of the earliest dedicated transseptal TMVR systems and the foundation of the Edwards EVOQUE mitral platform.",
+  "pearls": [
+    "Derived from the original CardiAQ TMVR technology.",
+    "The mitral EVOQUE platform is distinct from the FDA-approved EVOQUE tricuspid valve."
+  ],
+  "limitations": [
+    "Single-arm experience",
+    "Limited long-term data"
+  ],
+  "guideline_acc": "Limited feasibility evidence.",
+  "guideline_esc": "Limited feasibility evidence.",
+  "fda_impact": "Mitral program remains investigational.",
+  "timeline": [
+    "Enrollment: 2015–ongoing",
+    "Early feasibility published: 2020",
+    "1-year outcomes published: 2025"
+  ],
+  "authors": "",
+  "journal": "JACC: Cardiovascular Interventions",
+  "year": "2020",
+  "doi": "10.1016/j.jcin.2020.06.040",
+  "pmid": "",
+  "caveat": "",
+  "key_papers": [
+    {
+      "label": "Early feasibility study",
+      "citation": "Webb JG, et al. JACC Cardiovasc Interv. 2020.",
+      "doi": "10.1016/j.jcin.2020.06.040",
+      "pmid": ""
+    },
+    {
+      "label": "1-year outcomes",
+      "citation": "MISCEND Study: 1-Year Outcomes. JACC Cardiovasc Interv. 2025.",
+      "doi": "10.1016/j.jcin.2025.08.009",
+      "pmid": ""
+    }
+  ]
+},
   {
     "acronym": "MITRAL",
     "full_name": "Mitral Implantation of Transcatheter Valves",
