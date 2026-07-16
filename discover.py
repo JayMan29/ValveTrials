@@ -113,9 +113,9 @@ def _cli():
 
     store = _load_all(args.files)
     client = PubMedClient(api_key=os.environ.get("NCBI_API_KEY"))
-    term = f"{args.query} AND (\"last {args.days} days\"[dp])"
-    pmids = client.esearch(term, retmax=args.retmax)
-    print(f"PubMed returned {len(pmids)} recent records; scoring...")
+    # Correct recency filter: PubMed's reldate (last N days by publication date).
+    pmids = client.esearch(args.query, retmax=args.retmax, reldate=args.days, datetype="pdat")
+    print(f"PubMed returned {len(pmids)} records in the last {args.days} days; scoring...")
     cands = client.efetch(pmids) if pmids else []
     picks = select(cands, store, min_conf=args.min_confidence)[: args.max]
 
