@@ -4540,25 +4540,25 @@
     "pmid": "34736561",
     "caveat": "",
     "key_papers": [
-  {
-    "label": "Primary expanded clinical study",
-    "citation": "Sorajja P, et al. J Am Coll Cardiol. 2021.",
-    "doi": "10.1016/j.jacc.2021.08.060",
-    "pmid": "34736561"
-  },
-  {
-    "label": "Clinical outcomes and predictors",
-    "citation": "Conradi L, Ludwig S, Sorajja P, et al. Clinical outcomes and predictors of transapical transcatheter mitral valve replacement: the Tendyne Expanded Clinical Study. EuroIntervention. 2024;20(14):e887-e897.",
-    "doi": "10.4244/EIJ-D-23-00904",
-    "pmid": ""
-  },
-  {
-    "label": "Five-year outcomes",
-    "citation": "Muller DW, Duncan A, Sorajja P, et al. Five-Year Outcomes of Transcatheter Mitral Valve Replacement in Patients With Severe Symptomatic Mitral Regurgitation: Results From the Tendyne Expanded Clinical Study. ESC Heart Failure. 2026.",
-    "doi": "10.1093/eschf/xvag175",
-    "pmid": ""
-  }
-]
+      {
+        "label": "Primary expanded clinical study",
+        "citation": "Sorajja P, et al. J Am Coll Cardiol. 2021.",
+        "doi": "10.1016/j.jacc.2021.08.060",
+        "pmid": "34736561"
+      },
+      {
+        "label": "Clinical outcomes and predictors",
+        "citation": "Conradi L, Ludwig S, Sorajja P, et al. Clinical outcomes and predictors of transapical transcatheter mitral valve replacement: the Tendyne Expanded Clinical Study. EuroIntervention. 2024;20(14):e887-e897.",
+        "doi": "10.4244/EIJ-D-23-00904",
+        "pmid": ""
+      },
+      {
+        "label": "Five-year outcomes",
+        "citation": "Muller DW, Duncan A, Sorajja P, et al. Five-Year Outcomes of Transcatheter Mitral Valve Replacement in Patients With Severe Symptomatic Mitral Regurgitation: Results From the Tendyne Expanded Clinical Study. ESC Heart Failure. 2026.",
+        "doi": "10.1093/eschf/xvag175",
+        "pmid": ""
+      }
+    ]
   },
   {
     "acronym": "SUMMIT",
@@ -5053,79 +5053,79 @@
     "caveat": ""
   },
   {
-  "acronym": "HighLife TSMVR",
-  "full_name": "HighLife Transseptal Mitral Valve Replacement Feasibility Study",
-  "nct": "NCT04029337",
-  "category": "Transcatheter Mitral Replacement (TMVR)",
-  "tags": [
-    "HighLife",
-    "Transseptal",
-    "Single-arm",
-    "Feasibility"
-  ],
-  "status": "published",
-  "signal": "descriptive",
-  "practice_changing": false,
-  "landmark": false,
-  "evidence_stars": 0,
-  "quick_summary": "A transseptal, docking-ring-based TMVR concept; feasibility showed 90% implant success with 83% device success at 30 days, illustrating both the promise and complexity of multicomponent systems.",
-  "takeaway": "HighLife demonstrated the feasibility of a transseptal docking-ring TMVR system while highlighting the procedural complexity of multicomponent devices.",
-  "device": "HighLife TSMVR (two-component ring + valve)",
-  "intervention": "Transseptal TMVR",
-  "comparator": "None (single-arm)",
-  "population": "Symptomatic mitral regurgitation at high surgical risk",
-  "risk_group": "High risk",
-  "sample_size": "30",
-  "enrollment": "Early 2020s",
-  "follow_up": "30 days",
-  "trial_type": "Prospective single-arm",
-  "valve": "Mitral",
-  "disease": "Mitral regurgitation",
-  "procedure": "Transseptal TMVR (docking ring)",
-  "inclusion": [],
-  "primary_endpoint": "Feasibility, safety, and device performance.",
-  "secondary_endpoints": [
-    "Implant success",
-    "Device success",
-    "MR reduction",
-    "Transmitral gradient"
-  ],
-  "key_results": [
-    "Implant success 90%",
-    "30-day device success 83%",
-    "Demonstrated feasibility of a fully transseptal docking-ring TMVR system"
-  ],
-  "why_matters": "One of the earliest successful transseptal dedicated TMVR platforms using a subannular docking ring for secure anchoring.",
-  "pearls": [
-    "Two-component (subannular ring + valve) design provides dedicated anchoring independent of annular calcification.",
-    "Demonstrated feasibility of fully transseptal TMVR without transapical access."
-  ],
-  "limitations": [
-    "Small single-arm feasibility study",
-    "Early experience with a technically complex multicomponent system"
-  ],
-  "guideline_acc": "Feasibility evidence.",
-  "guideline_esc": "Early feasibility data.",
-  "fda_impact": "Investigational.",
-  "timeline": [
-    "Published: JACC Cardiovascular Interventions 2023",
-    "2-year follow-up published: 2026"
-  ],
-  "authors": "",
-  "journal": "JACC: Cardiovascular Interventions",
-  "year": "2023",
-  "doi": "10.1016/j.jcin.2023.09.003",
-  "pmid": "",
-  "caveat": "",
-  "key_papers": [
-    {
-      "label": "2-year outcomes",
-      "citation": "HighLife Transseptal Mitral Valve Replacement Feasibility Study: 2-Year Outcomes. JACC Cardiovasc Interv. 2026.",
-      "doi": "10.1016/j.jcin.2026.01.294",
-      "pmid": ""
-    }
-  ]
-},
+    "acronym": "HighLife TSMVR",
+    "full_name": "HighLife Transseptal Mitral Valve Replacement Feasibility Study",
+    "nct": "NCT04029337",
+    "category": "Transcatheter Mitral Replacement (TMVR)",
+    "tags": [
+      "HighLife",
+      "Transseptal",
+      "Single-arm",
+      "Feasibility"
+    ],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "A transseptal, docking-ring-based TMVR concept; feasibility showed 90% implant success with 83% device success at 30 days, illustrating both the promise and complexity of multicomponent systems.",
+    "takeaway": "HighLife demonstrated the feasibility of a transseptal docking-ring TMVR system while highlighting the procedural complexity of multicomponent devices.",
+    "device": "HighLife TSMVR (two-component ring + valve)",
+    "intervention": "Transseptal TMVR",
+    "comparator": "None (single-arm)",
+    "population": "Symptomatic mitral regurgitation at high surgical risk",
+    "risk_group": "High risk",
+    "sample_size": "30",
+    "enrollment": "Early 2020s",
+    "follow_up": "30 days",
+    "trial_type": "Prospective single-arm",
+    "valve": "Mitral",
+    "disease": "Mitral regurgitation",
+    "procedure": "Transseptal TMVR (docking ring)",
+    "inclusion": [],
+    "primary_endpoint": "Feasibility, safety, and device performance.",
+    "secondary_endpoints": [
+      "Implant success",
+      "Device success",
+      "MR reduction",
+      "Transmitral gradient"
+    ],
+    "key_results": [
+      "Implant success 90%",
+      "30-day device success 83%",
+      "Demonstrated feasibility of a fully transseptal docking-ring TMVR system"
+    ],
+    "why_matters": "One of the earliest successful transseptal dedicated TMVR platforms using a subannular docking ring for secure anchoring.",
+    "pearls": [
+      "Two-component (subannular ring + valve) design provides dedicated anchoring independent of annular calcification.",
+      "Demonstrated feasibility of fully transseptal TMVR without transapical access."
+    ],
+    "limitations": [
+      "Small single-arm feasibility study",
+      "Early experience with a technically complex multicomponent system"
+    ],
+    "guideline_acc": "Feasibility evidence.",
+    "guideline_esc": "Early feasibility data.",
+    "fda_impact": "Investigational.",
+    "timeline": [
+      "Published: JACC Cardiovascular Interventions 2023",
+      "2-year follow-up published: 2026"
+    ],
+    "authors": "",
+    "journal": "JACC: Cardiovascular Interventions",
+    "year": "2023",
+    "doi": "10.1016/j.jcin.2023.09.003",
+    "pmid": "",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "2-year outcomes",
+        "citation": "HighLife Transseptal Mitral Valve Replacement Feasibility Study: 2-Year Outcomes. JACC Cardiovasc Interv. 2026.",
+        "doi": "10.1016/j.jcin.2026.01.294",
+        "pmid": ""
+      }
+    ]
+  },
   {
     "acronym": "Tiara EFS",
     "full_name": "Neovasc Tiara Transapical TMVR Early Feasibility Study",
@@ -5414,84 +5414,84 @@
     "caveat": ""
   },
   {
-  "acronym": "EVOQUE Eos MISCEND",
-  "full_name": "Edwards EVOQUE Eos Mitral Valve Replacement (MISCEND Study)",
-  "nct": "NCT02718001",
-  "category": "Transcatheter Mitral Replacement (TMVR)",
-  "tags": [
-    "EVOQUE Eos",
-    "CardiAQ lineage",
-    "Single-arm"
-  ],
-  "status": "ongoing",
-  "signal": "descriptive",
-  "practice_changing": false,
-  "landmark": false,
-  "evidence_stars": 0,
-  "quick_summary": "An active Edwards mitral TMVR program (EVOQUE/CardiAQ lineage) evaluating safety and performance across degenerative and functional MR; early feasibility demonstrated promising procedural success with sustained improvement through 1 year.",
-  "takeaway": "The EVOQUE/CardiAQ platform demonstrated encouraging early and 1-year outcomes and remains one of the leading dedicated transseptal TMVR programs.",
-  "device": "Edwards EVOQUE Eos",
-  "intervention": "Transcatheter mitral replacement",
-  "comparator": "None (single-arm)",
-  "population": "Degenerative or functional mitral regurgitation",
-  "risk_group": "High risk",
-  "sample_size": "~123",
-  "enrollment": "2015–ongoing",
-  "follow_up": "Ongoing",
-  "trial_type": "Prospective single-arm",
-  "valve": "Mitral",
-  "disease": "Degenerative or functional mitral regurgitation",
-  "procedure": "Transcatheter mitral replacement",
-  "inclusion": [],
-  "primary_endpoint": "Safety and device performance.",
-  "secondary_endpoints": [
-    "Technical success",
-    "MR reduction",
-    "Functional improvement",
-    "Mortality"
-  ],
-  "key_results": [
-    "Early feasibility demonstrated high technical success with effective MR elimination",
-    "Clinical improvement and valve performance remained favorable through 1 year"
-  ],
-  "why_matters": "One of the earliest dedicated transseptal TMVR systems and the foundation of the Edwards EVOQUE mitral platform.",
-  "pearls": [
-    "Derived from the original CardiAQ TMVR technology.",
-    "The mitral EVOQUE platform is distinct from the FDA-approved EVOQUE tricuspid valve."
-  ],
-  "limitations": [
-    "Single-arm experience",
-    "Limited long-term data"
-  ],
-  "guideline_acc": "Limited feasibility evidence.",
-  "guideline_esc": "Limited feasibility evidence.",
-  "fda_impact": "Mitral program remains investigational.",
-  "timeline": [
-    "Enrollment: 2015–ongoing",
-    "Early feasibility published: 2020",
-    "1-year outcomes published: 2025"
-  ],
-  "authors": "",
-  "journal": "JACC: Cardiovascular Interventions",
-  "year": "2020",
-  "doi": "10.1016/j.jcin.2020.06.040",
-  "pmid": "",
-  "caveat": "",
-  "key_papers": [
-    {
-      "label": "Early feasibility study",
-      "citation": "Webb JG, et al. JACC Cardiovasc Interv. 2020.",
-      "doi": "10.1016/j.jcin.2020.06.040",
-      "pmid": ""
-    },
-    {
-      "label": "1-year outcomes",
-      "citation": "MISCEND Study: 1-Year Outcomes. JACC Cardiovasc Interv. 2025.",
-      "doi": "10.1016/j.jcin.2025.08.009",
-      "pmid": ""
-    }
-  ]
-},
+    "acronym": "EVOQUE Eos MISCEND",
+    "full_name": "Edwards EVOQUE Eos Mitral Valve Replacement (MISCEND Study)",
+    "nct": "NCT02718001",
+    "category": "Transcatheter Mitral Replacement (TMVR)",
+    "tags": [
+      "EVOQUE Eos",
+      "CardiAQ lineage",
+      "Single-arm"
+    ],
+    "status": "ongoing",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "quick_summary": "An active Edwards mitral TMVR program (EVOQUE/CardiAQ lineage) evaluating safety and performance across degenerative and functional MR; early feasibility demonstrated promising procedural success with sustained improvement through 1 year.",
+    "takeaway": "The EVOQUE/CardiAQ platform demonstrated encouraging early and 1-year outcomes and remains one of the leading dedicated transseptal TMVR programs.",
+    "device": "Edwards EVOQUE Eos",
+    "intervention": "Transcatheter mitral replacement",
+    "comparator": "None (single-arm)",
+    "population": "Degenerative or functional mitral regurgitation",
+    "risk_group": "High risk",
+    "sample_size": "~123",
+    "enrollment": "2015–ongoing",
+    "follow_up": "Ongoing",
+    "trial_type": "Prospective single-arm",
+    "valve": "Mitral",
+    "disease": "Degenerative or functional mitral regurgitation",
+    "procedure": "Transcatheter mitral replacement",
+    "inclusion": [],
+    "primary_endpoint": "Safety and device performance.",
+    "secondary_endpoints": [
+      "Technical success",
+      "MR reduction",
+      "Functional improvement",
+      "Mortality"
+    ],
+    "key_results": [
+      "Early feasibility demonstrated high technical success with effective MR elimination",
+      "Clinical improvement and valve performance remained favorable through 1 year"
+    ],
+    "why_matters": "One of the earliest dedicated transseptal TMVR systems and the foundation of the Edwards EVOQUE mitral platform.",
+    "pearls": [
+      "Derived from the original CardiAQ TMVR technology.",
+      "The mitral EVOQUE platform is distinct from the FDA-approved EVOQUE tricuspid valve."
+    ],
+    "limitations": [
+      "Single-arm experience",
+      "Limited long-term data"
+    ],
+    "guideline_acc": "Limited feasibility evidence.",
+    "guideline_esc": "Limited feasibility evidence.",
+    "fda_impact": "Mitral program remains investigational.",
+    "timeline": [
+      "Enrollment: 2015–ongoing",
+      "Early feasibility published: 2020",
+      "1-year outcomes published: 2025"
+    ],
+    "authors": "",
+    "journal": "JACC: Cardiovascular Interventions",
+    "year": "2020",
+    "doi": "10.1016/j.jcin.2020.06.040",
+    "pmid": "",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "Early feasibility study",
+        "citation": "Webb JG, et al. JACC Cardiovasc Interv. 2020.",
+        "doi": "10.1016/j.jcin.2020.06.040",
+        "pmid": ""
+      },
+      {
+        "label": "1-year outcomes",
+        "citation": "MISCEND Study: 1-Year Outcomes. JACC Cardiovasc Interv. 2025.",
+        "doi": "10.1016/j.jcin.2025.08.009",
+        "pmid": ""
+      }
+    ]
+  },
   {
     "acronym": "MITRAL",
     "full_name": "Mitral Implantation of Transcatheter Valves",
@@ -5755,12 +5755,12 @@
     "pmid": "",
     "caveat": "",
     "key_papers": [
-  {
-    "label": "MAC Score Comparison: 3D-TEE vs CT",
-    "citation": "Quelal Analuisa K, et al. JACC Advances. 2025.",
-    "doi": "10.1016/j.jacadv.2025.102427",
-    "pmid": "41411992"
-  }
+      {
+        "label": "MAC Score Comparison: 3D-TEE vs CT",
+        "citation": "Quelal Analuisa K, et al. JACC Advances. 2025.",
+        "doi": "10.1016/j.jacadv.2025.102427",
+        "pmid": "41411992"
+      }
     ]
   },
   {
@@ -5826,12 +5826,60 @@
     "pmid": "31118146",
     "caveat": "",
     "key_papers": [
+      {
+        "label": "5-Year Outcomes",
+        "citation": "Khan JM, et al. JACC Cardiovasc Interv. 2024;17(18):2157-2167.",
+        "doi": "10.1016/j.jcin.2024.05.041",
+        "pmid": "39243268"
+      }
+    ]
+  },
   {
-    "label": "5-Year Outcomes",
-    "citation": "Khan JM, et al. JACC Cardiovasc Interv. 2024;17(18):2157-2167.",
-    "doi": "10.1016/j.jcin.2024.05.041",
-    "pmid": "39243268"
-    }
-]
+    "acronym": "DRAFT - review: set acronym",
+    "full_name": "1-Year Outcomes With the Fully Repositionable and Retrievable Lotus Transcatheter Aortic Replacement Valve in 120 High-Risk Surgical Patients With Severe Aortic Stenosis: Results of the REPRISE II Study.",
+    "nct": "NCT01627691",
+    "category": "Aortic Replacement",
+    "valve": "Aortic",
+    "procedure": "",
+    "disease": "",
+    "tags": [],
+    "status": "published",
+    "signal": "descriptive",
+    "practice_changing": false,
+    "landmark": false,
+    "evidence_stars": 0,
+    "caveat": "",
+    "quick_summary": "DRAFT - review: one-paragraph plain summary",
+    "takeaway": "DRAFT - review: one-line headline",
+    "device": "",
+    "intervention": "",
+    "comparator": "",
+    "population": "",
+    "risk_group": "",
+    "sample_size": "120",
+    "enrollment": "",
+    "follow_up": "",
+    "trial_type": "",
+    "inclusion": [],
+    "primary_endpoint": "DRAFT - review: state the primary endpoint",
+    "secondary_endpoints": [],
+    "key_results": [
+      "DRAFT - review: list the key numeric results"
+    ],
+    "why_matters": "DRAFT - review: why this trial matters",
+    "pearls": [],
+    "limitations": [],
+    "guideline_acc": "",
+    "guideline_esc": "",
+    "fda_impact": "",
+    "timeline": [
+      "Published: JACC. Cardiovascular interventions 2016"
+    ],
+    "authors": "Meredith IT, Walters DL, Dumonteil N, et al.",
+    "journal": "JACC. Cardiovascular interventions",
+    "year": "2016",
+    "doi": "10.1016/j.jcin.2015.10.024",
+    "pmid": "26892084",
+    "key_papers": []
   }
 ]
