@@ -1,0 +1,40 @@
+name: PubMed link check (review only)
+
+# Runs the trial->PubMed linker and posts a confidence report as a downloadable
+# artifact. REVIEW ONLY: it never edits trials.json / trials_tricuspid.json.
+# Trigger it by hand from the Actions tab, or let it run monthly.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 1 * *"      # 06:00 UTC on the 1st of each month
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Self-test the scoring logic
+        run: python pubmed_linker.py --selftest
+      - name: Review candidate papers for unlinked trials
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}   # optional; raises the rate limit
+        run: |
+          {
+            echo "# PubMed link-check report"
+            echo "_Generated $(date -u)._  Review only — no data changed."
+            echo
+            for f in trials.json trials_*.json; do
+              [ -f "$f" ] || continue
+              echo "## $f"
+              python pubmed_linker.py --file "$f" || true
+              echo
+            done
+          } > link-report.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pubmed-link-report
+          path: link-report.md
