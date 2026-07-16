@@ -40,7 +40,11 @@ jobs:
             --min-confidence "${{ github.event.inputs.min_confidence || 'HIGH' }}" \
             --max "${{ github.event.inputs.max || 8 }}" \
             --emit picks.txt
-          echo "count=$(grep -c . picks.txt || echo 0)" >> "$GITHUB_OUTPUT"
+          # Clean single-integer count (empty file -> 0), safe for GITHUB_OUTPUT.
+          COUNT=$(grep -c . picks.txt 2>/dev/null || true)
+          COUNT=${COUNT:-0}
+          echo "count=${COUNT}" >> "$GITHUB_OUTPUT"
+          echo "Discovery selected ${COUNT} candidate(s)."
 
       - name: Open one PR per selected paper
         if: steps.sweep.outputs.count != '0'
