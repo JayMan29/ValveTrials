@@ -266,7 +266,7 @@
         "label": "Echocardiographic outcomes",
         "citation": "Donal E, et al. JACC Cardiovasc Imaging 2025.",
         "doi": "10.1016/j.jcmg.2025.09.010",
-        "pmid": ""
+        "pmid": "41258847"
       }
     ]
   },
@@ -406,7 +406,7 @@
         "label": "30-day",
         "citation": "Kodali S, et al. J Am Coll Cardiol 2021;77(4):345-356.",
         "doi": "10.1016/j.jacc.2020.11.047",
-        "pmid": ""
+        "pmid": "33509390"
       }
     ]
   },
@@ -528,7 +528,7 @@
     "journal": "Journal of the American College of Cardiology",
     "year": "2023",
     "doi": "10.1016/j.jcin.2022.01.016",
-    "pmid": "",
+    "pmid": "35272771",
     "caveat": "",
     "key_papers": [
       {
@@ -541,7 +541,7 @@
         "label": "1-year",
         "citation": "Kodali S, Hahn RT, Makkar R, et al. Eur Heart J 2023;44(46):4862-4873.",
         "doi": "10.1093/eurheartj/ehad667",
-        "pmid": ""
+        "pmid": "37930776"
       }
     ]
   },
@@ -613,14 +613,14 @@
     "journal": "New England Journal of Medicine",
     "year": "2025",
     "doi": "10.1056/NEJMoa2401918",
-    "pmid": "",
+    "pmid": "39475399",
     "caveat": "",
     "key_papers": [
       {
         "label": "Quality of life (1-year)",
         "citation": "Arnold SV, et al. J Am Coll Cardiol 2025;85(3):206-216.",
         "doi": "10.1016/j.jacc.2024.10.067",
-        "pmid": ""
+        "pmid": "39480380"
       },
       {
         "label": "Outcomes by baseline TR severity",
@@ -755,7 +755,7 @@
     "journal": "Journal of the American College of Cardiology",
     "year": "2019",
     "doi": "10.1016/j.jacc.2019.01.062",
-    "pmid": "",
+    "pmid": "30999993",
     "caveat": "",
     "key_papers": [
       {
@@ -915,8 +915,16 @@
     "journal": "JACC: Cardiovascular Interventions",
     "year": "2022",
     "doi": "10.1016/j.jcin.2022.05.022",
-    "pmid": "",
-    "caveat": ""
+    "pmid": "35583363",
+    "caveat": "",
+    "key_papers": [
+      {
+        "label": "1-year outcomes",
+        "citation": "Bicaval TricValve implantation in patients with severe symptomatic tricuspid regurgitation: 1-year outcomes.",
+        "doi": "10.1016/j.jcin.2023.10.043",
+        "pmid": "38069986"
+      }
+    ]
   },
   {
     "acronym": "HOVER",
@@ -978,7 +986,15 @@
     "year": "",
     "doi": "",
     "pmid": "",
-    "caveat": "Off-label use of a commercially available valve; very small feasibility study."
+    "caveat": "Off-label use of a commercially available valve; very small feasibility study.",
+    "key_papers": [
+      {
+        "label": "Trial design and rationale",
+        "citation": "Study design and rationale of heterotopic implantation of the Edwards-Sapien XT valve in the inferior vena cava for severe tricuspid regurgitation.",
+        "doi": "",
+        "pmid": "27122473"
+      }
+    ]
   },
   {
     "acronym": "TANDEM I (CroíValve)",
