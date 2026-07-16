@@ -408,9 +408,13 @@ class PubMedClient:
         time.sleep(0.11 if self.api_key else 0.34)   # respect NCBI rate limits
         return data
 
-    def esearch(self, term: str, retmax=20) -> List[str]:
+    def esearch(self, term: str, retmax=20, reldate=None, datetype=None) -> List[str]:
         import xml.etree.ElementTree as ET
-        xml = self._get("esearch.fcgi", {"db": "pubmed", "term": term, "retmax": retmax})
+        params = {"db": "pubmed", "term": term, "retmax": retmax}
+        if reldate:                       # e.g. reldate=45 -> last 45 days
+            params["reldate"] = int(reldate)
+            params["datetype"] = datetype or "pdat"   # pdat=publication, edat=entrez
+        xml = self._get("esearch.fcgi", params)
         root = ET.fromstring(xml)
         return [e.text for e in root.findall(".//IdList/Id")]
 
