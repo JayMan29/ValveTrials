@@ -347,11 +347,10 @@ def site_header(active: str) -> str:
         f"<a href='{k}.html' class='{'active' if k == active else ''}'>{e(lbl)}</a>"
         for k, lbl, _, _, _ in VALVES
     )
-    ed = f"<a href='editor.html' class='editlink {'active' if active == 'editor' else ''}'>✎ Editor</a>"
     return f"""
 <header class="site">
   <a class="brand" href="index.html">Valve<span>Trials</span>.com</a>
-  <nav class="site-nav">{nav}{ed}</nav>
+  <nav class="site-nav">{nav}</nav>
 </header>""".strip()
 
 
@@ -1077,7 +1076,7 @@ apply();
 def main():
     outdir = sys.argv[1] if len(sys.argv) > 1 else "."
     os.makedirs(outdir, exist_ok=True)
-    pages = {"index.html": build_home(), "editor.html": build_editor_page()}
+    pages = {"index.html": build_home()}
     for k, *_ in VALVES:
         pages[f"{k}.html"] = (build_valve_list_page(k) if trials_for(k)
                               else build_coming_soon_page(k))
