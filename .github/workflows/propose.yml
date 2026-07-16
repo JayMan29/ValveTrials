@@ -1,0 +1,65 @@
+name: Propose trial/paper from PubMed (opens a PR to approve)
+
+# You run this by hand with a PMID (or wire it to the monthly link-check output).
+# It generates the change on a NEW BRANCH and opens a Pull Request:
+#   - GitHub emails you that a PR is open
+#   - the PR diff shows every generated field (new trial) or the attached follow-up
+#   - MERGE = approve  -> it lands on main and your deploy workflow rebuilds the site
+#   - CLOSE = reject   -> nothing changes
+# Nothing is ever written to main without your merge.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pmid:
+        description: "PubMed ID of the paper to propose"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate the proposal (writes to the correct JSON on this branch)
+        id: gen
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}   # optional; only speeds up PubMed
+        run: |
+          python proposer.py --pmid "${{ inputs.pmid }}" --write | tee proposal.txt
+          echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+          cat proposal.txt >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Open a Pull Request for your approval
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: "propose/pmid-${{ inputs.pmid }}"
+          title: "Add from PubMed: PMID ${{ inputs.pmid }}"
+          labels: needs-review
+          add-paths: |
+            trials.json
+            trials_*.json
+          commit-message: "Proposed add from PMID ${{ inputs.pmid }}"
+          body: |
+            Automated proposal from PMID **${{ inputs.pmid }}**.
+
+            ```
+            ${{ steps.gen.outputs.summary }}
+            ```
+
+            **Review checklist**
+            - [ ] Routing is correct (new trial vs subanalysis vs fill-primary)
+            - [ ] For a NEW trial: set the `acronym` and fill the `DRAFT - review:` clinical fields
+            - [ ] DOI / PMID / citation are right
+            - [ ] Category / valve are correct
+
+            **Merge = approve** (lands on main, site rebuilds). **Close = reject.**
+          delete-branch: true
