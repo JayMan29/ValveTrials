@@ -1,8 +1,9 @@
-name: PubMed link check (review only)
+name: Trial audit (verify primaries + find missing follow-ups)
 
-# Runs the trial->PubMed linker and posts a confidence report as a downloadable
-# artifact. REVIEW ONLY: it never edits trials.json / trials_tricuspid.json.
-# Trigger it by hand from the Actions tab, or let it run monthly.
+# Checks EVERY published trial in one pass:
+#   - is the stored primary DOI/PMID correct (cross-checked against the NCT registration)?
+#   - which follow-up / subanalysis papers registered to that NCT are you missing?
+# REVIEW ONLY: never edits trials.json / trials_*.json. Posts a downloadable report.
 
 on:
   workflow_dispatch:
@@ -10,31 +11,21 @@ on:
     - cron: "0 6 1 * *"      # 06:00 UTC on the 1st of each month
 
 jobs:
-  link-check:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Self-test the scoring logic
-        run: python pubmed_linker.py --selftest
-      - name: Review candidate papers for unlinked trials
+      - name: Self-test the audit logic
+        run: python audit.py --selftest
+      - name: Audit every trial against PubMed
         env:
-          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}   # optional; raises the rate limit
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}   # optional; only speeds up PubMed
         run: |
-          {
-            echo "# PubMed link-check report"
-            echo "_Generated $(date -u)._  Review only — no data changed."
-            echo
-            for f in trials.json trials_*.json; do
-              [ -f "$f" ] || continue
-              echo "## $f"
-              python pubmed_linker.py --file "$f" || true
-              echo
-            done
-          } > link-report.md
+          python audit.py --files trials.json trials_*.json | tee audit-report.md
       - uses: actions/upload-artifact@v4
         with:
-          name: pubmed-link-report
-          path: link-report.md
+          name: trial-audit-report
+          path: audit-report.md
