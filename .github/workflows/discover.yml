@@ -1,0 +1,69 @@
+name: Monthly PubMed discovery (auto-open PRs for HIGH hits)
+
+# Once a month, sweeps PubMed for NEW transcatheter valve-trial papers across all three
+# valves, scores them, drops anything already in your data / low-confidence / reviews,
+# and opens ONE pull request per surviving HIGH hit (hard-capped so it can't flood you).
+# Merge a PR = approve.  Close = reject.  Nothing lands on main without your merge.
+
+on:
+  workflow_dispatch:          # run on demand from the Actions tab
+    inputs:
+      min_confidence:
+        description: "Minimum confidence to propose (HIGH recommended)"
+        default: "HIGH"
+      max:
+        description: "Max PRs to open this run"
+        default: "8"
+  schedule:
+    - cron: "0 7 2 * *"       # 07:00 UTC on the 2nd of each month
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Sweep PubMed and select high-confidence new papers
+        id: sweep
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}   # optional; only speeds up PubMed
+        run: |
+          python discover.py --selftest
+          python discover.py \
+            --min-confidence "${{ github.event.inputs.min_confidence || 'HIGH' }}" \
+            --max "${{ github.event.inputs.max || 8 }}" \
+            --emit picks.txt
+          echo "count=$(grep -c . picks.txt || echo 0)" >> "$GITHUB_OUTPUT"
+
+      - name: Open one PR per selected paper
+        if: steps.sweep.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+        run: |
+          git config user.name  "valvetrials-bot"
+          git config user.email "actions@github.com"
+          while read -r PMID; do
+            [ -z "$PMID" ] && continue
+            BR="discover/pmid-$PMID"
+            git checkout -B "$BR" origin/${GITHUB_REF_NAME}
+            python proposer.py --pmid "$PMID" --write --files trials.json trials_tricuspid.json | tee body.txt
+            git add trials.json trials_*.json || true
+            if git diff --cached --quiet; then
+              echo "No change for PMID $PMID (duplicate) - skipping."
+              continue
+            fi
+            git commit -m "Discovery: propose add from PMID $PMID"
+            git push -f origin "$BR"
+            gh pr create --base "${GITHUB_REF_NAME}" --head "$BR" \
+              --title "Discovery: add from PubMed PMID $PMID" \
+              --label needs-review \
+              --body-file body.txt || echo "PR may already exist for $PMID"
+          done < picks.txt
